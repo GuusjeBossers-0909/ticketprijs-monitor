@@ -155,147 +155,126 @@
 // DATA — bijgewerkt door de wekelijkse scheduled task "ticketprijs-monitor-weekly"
 // ---------------------------------------------------------------------
 
-const SNAPSHOT = '2026-07-14';
-const PREV_DATE = '2026-06-22'; // datum van de vorige meting
+const SNAPSHOT = '2026-07-20';
+const PREV_DATE = '2026-07-14'; // datum van de vorige meting
 
-// PREV: eventId -> laatst bekende prijs (van de meting op 22-6-2026).
-// null = event bestond nog niet in de vorige meting, of had toen nog geen actieve prijs (bv. pre-register/niet in verkoop).
+// PREV: eventId -> laatst bekende prijs (van de meting op 14-7-2026).
+// null = event bestond nog niet, of had toen nog geen actieve prijs (bv. pre-register/niet in verkoop).
 const PREV = {
-  'verknipt-beach-sat': null,        // was toen ook al uitverkocht, geen prijs bekend
-  'verknipt-beach-sun': 34.34,       // Late Ticket destijds actief
-  'verknipt-pulse-diffrent': 29.29,  // Normal Ticket, ongewijzigd
-  'verknipt-ade-specials': null,     // pre-register, toen ook al
-  'verknipt-festival-2027': null,
-  'verknipt-arena-2026': null,
-  'awakenings-festival-2026': null,  // niet met zekerheid vast te stellen in vorige meting
-  'awakenings-upclose-2027': null,
-  'tegendraads-2026': 68.00,         // ongewijzigd
-  'fym-groningen': null,             // nog niet getrackt onder deze naam/datum
-  'fym-r2': null,
-  'fym-boris-brejcha': 53.50,        // fase 2, ongewijzigd
-  'fym-schrotthagen': 21.00,         // fase 1 destijds, nu fase 2 (€24,00)
-  'fym-teletech-ade': 39.00,         // ongewijzigd
-  'fym-teletech-4tp': 38.00,         // ongewijzigd
-  'fym-ferry-corsten': null,         // was toen nog pre-register zonder prijs
-  'fym-kruelty-vieze': 39.50,        // ongewijzigd
-  'fym-vieze-kruelty-afas': null,    // was toen al uitverkocht, geen prijs bekend
-  'fym-levi-club-ade': null,         // nieuw ontdekt deze week
-  'itw-amersfoort': null,            // was toen al uitverkocht, geen prijs bekend
-  'itw-ade-ndsm': 71.00,             // vorige meting toonde €77,50 incl. servicekosten — zelfde tier, geen echte wijziging (zie toelichting)
-  'afp-lisa-korver': null,           // was toen al uitverkocht
-  'afp-skepta-mastiempo': 70.00,     // ongewijzigd
-  'afp-pegassi': null,               // was toen al uitverkocht
-  'ao-by-day': 79.45,                // ongewijzigd
-  'ao-combi': 103.90,                // ongewijzigd
-  'ao-x-ade': null,
-  'maas-summer': 42.50,              // was €42,50, nu €44,99 (Late Maas-tier)
-  'loveland-2026': null,             // niet met zekerheid vast te stellen in vorige meting
-  'dgtl-ams-2027': null,
-  'soenda-indoor': null,             // verkoop was nog niet gestart (aankondiging: Early €58,90 vanaf 25/6)
-  'ohm-herfstfestival': null,        // prijs was nog niet bekend ("tickets volgen")
-  'gashouder-armin-benwal': null,    // geen data uit vorige meting beschikbaar
-  'gashouder-ihatemodels-nico': null,
-  'gashouder-joshbaker': null,
-  'gashouder-jobjobse': null,
-  'gashouder-mochakk': null,
-  'gashouder-sammyvirji': null,
-  'gashouder-frankyrizardo': null,
+  'verknipt-pulse-diffrent': 29.29,
+  'tegendraads-2026': 68.00,
+  'fym-r2': null,               // was nog pre-register vorige meting
+  'fym-boris-brejcha': 53.50,
+  'fym-schrotthagen': 24.00,
+  'fym-teletech-ade': 39.00,
+  'fym-teletech-4tp': 38.00,
+  'fym-ferry-corsten': 27.00,
+  'fym-kruelty-vieze': 39.50,
+  'fym-vieze-kruelty-afas': 45.00,
+  'itw-amersfoort': 81.00,
+  'itw-ade-ndsm': 71.00,
+  'afp-skepta-mastiempo': 70.00,
+  'ao-by-day': 79.45,
+  'ao-combi': 103.90,
+  'maas-summer': 44.99,
+  'loveland-2026': 96.00,
+  'soenda-indoor': 67.90,
+  'ohm-herfstfestival': 39.50,
+  'gashouder-armin-benwal': 80.00,
+  'gashouder-ihatemodels-nico': 74.95,
+  'gashouder-joshbaker': 64.00,
+  'gashouder-mochakk': null,      // nog geen prijs bekend vorige meting
+  'gashouder-sammyvirji': null,   // nog geen prijs bekend vorige meting
 };
 
 const EVENTS = [
   // --- VERKNIPT ---
-  {id:'verknipt-beach-sat', organizer:'Verknipt', name:'Verknipt Beach Special – zaterdag', venue:'Beachclub Fuel, Bloemendaal', date:'2026-07-18', price:null, status:'uitverkocht', platform:'TicketSwap', note:'Uitverkocht op primaire markt. Alleen wachtlijst via TicketSwap (22 wachtend voor 31 tickets), geen tickets/prijs zichtbaar.'},
-  {id:'verknipt-beach-sun', organizer:'Verknipt', name:'Verknipt Beach Special – zondag', venue:'Beachclub Fuel, Bloemendaal', date:'2026-07-19', price:44.44, status:'bijna_uitverkocht', platform:'Weeztix', note:'Alleen "Last Minute Ticket" (€44,44) nog beschikbaar. Community/Normal/Late/Final fases uitverkocht.'},
-  {id:'verknipt-pulse-diffrent', organizer:'Verknipt', name:'PULSE x Diffrent All Day Long', venue:'Bronze Beach, Bloemendaal', date:'2026-08-15', price:29.29, status:'in_verkoop', platform:'Weeztix', note:'Community ticket (€24,24) uitverkocht; Normal-fase (€29,29) nog te koop.'},
-  {id:'verknipt-ade-specials', organizer:'Verknipt', name:'Verknipt ADE Specials (2 dagen)', venue:'AFAS Live, Amsterdam', date:'2026-10-24', price:null, status:'pre_register', platform:'Laylo', note:'Zaterdag 24/10 en zondag 25/10. Alleen Laylo "notify me"-widget, nog geen Weeztix-shop live.'},
-  {id:'verknipt-festival-2027', organizer:'Verknipt', name:'Verknipt Festival 2027', venue:'Strijkviertel, Utrecht', date:'2027-06-05', price:null, status:'pre_register', platform:'Weeztix', note:'Pre-register geopend.'},
-  {id:'verknipt-arena-2026', organizer:'Verknipt', name:"Verknipt 'Arena' 2026", venue:'TBA', date:'TBA', price:null, status:'pre_register', platform:'Weeztix', note:'Datum en locatie nog TBA. Aanmelden via mailinglijst (Mailchimp-signup).'},
+  {id:'verknipt-pulse-diffrent', organizer:'Verknipt', name:'PULSE x Diffrent All Day Long', venue:'Bronze Beach, Bloemendaal', date:'2026-08-15', price:29.29, status:'in_verkoop', platform:'Weeztix', note:'Bevestigd ongewijzigd (rechtstreeks in Weeztix-shop gecontroleerd): Community ticket uitverkocht, Normal-fase (€29,29) nog steeds actief in verkoop.'},
+  {id:'verknipt-ade-specials', organizer:'Verknipt', name:'Verknipt ADE Specials (zaterdag 24/10 + zondag 25/10)', venue:'AFAS Live, Amsterdam', date:'2026-10-24', price:null, status:'in_verkoop', platform:'Weeztix', note:'Belangrijke wijziging: losse Weeztix-ticketshops voor zaterdag en zondag zijn deze week live gegaan (Saturday/Sunday Tickets + Weekend Tickets). Vorige week nog alleen Laylo "notify me". Exacte ticketprijs kon niet worden uitgelezen (widget-accordion toonde geen tekst); volgende week prijs vaststellen.'},
+  {id:'verknipt-festival-2027', organizer:'Verknipt', name:'Verknipt Festival 2027', venue:'Strijkviertel, Utrecht', date:'2027-06-05', price:null, status:'pre_register', platform:'Weeztix', note:'Ongewijzigd: pre-register geopend.'},
+  {id:'verknipt-arena-2026', organizer:'Verknipt', name:"Verknipt 'Arena' 2026", venue:'TBA', date:'TBA', price:null, status:'pre_register', platform:'Weeztix', note:'Ongewijzigd: datum en locatie nog TBA, aanmelden via mailinglijst.'},
 
   // --- AWAKENINGS ---
-  {id:'awakenings-festival-2026', organizer:'Awakenings', name:'Awakenings Festival 2026', venue:'Hilvarenbeek', date:'2026-07-10', price:null, status:'uitverkocht', platform:'Awakenings shop', note:'Shop gesloten ("shop is closed"), event al geweest. Site verwijst naar wishlist 2027.'},
-  {id:'awakenings-upclose-2027', organizer:'Awakenings', name:'Awakenings Upclose 2027', venue:'Houtrak, Spaarnwoude', date:'2027-05-15', price:null, status:'niet_in_verkoop', platform:'Weeztix', note:'Reguliere verkoop start eind 2026, nu nog niet in verkoop.'},
+  {id:'awakenings-upclose-2027', organizer:'Awakenings', name:'Awakenings Upclose 2027', venue:'Houtrak, Spaarnwoude', date:'2027-05-15', price:null, status:'in_verkoop', platform:'Weeztix', note:'Wijziging: Loyalty- en Early Bird-tickets zijn uitverkocht; reguliere verkoop ("Regular ticketsale") is 15 juli van start gegaan. Exacte prijs van de huidige fase kon deze week niet worden vastgesteld (site liet zich moeilijk scrapen) — volgende week opnieuw proberen.'},
 
   // --- TEGENDRAADS ---
-  {id:'tegendraads-2026', organizer:'Tegendraads', name:'Tegendraads Festival 2026', venue:'Autotron, Rosmalen', date:'2026-07-25', price:68.00, status:'bijna_uitverkocht', platform:'Paylogic', note:'Loyalty (€59) en Regular (€65) uitverkocht; alleen Final Ticket (€68 excl. fee) nog beschikbaar.'},
+  {id:'tegendraads-2026', organizer:'Tegendraads', name:'Tegendraads Festival 2026', venue:'Autotron, Rosmalen', date:'2026-07-25', price:68.00, status:'bijna_uitverkocht', platform:'Paylogic', note:'Kon deze week niet automatisch worden ververst: de Paylogic-ticketwidget bleef leeg laden bij het scrapen (bij Maas Open Air, ook Paylogic, werkte dit wel — lijkt dus events-specifiek). Vorige status aangehouden (alleen Final Ticket €68 excl. fee nog beschikbaar).'},
 
   // --- FREE YOUR MIND ---
-  {id:'fym-groningen', organizer:'Free Your Mind', name:'FYM Festival Groningen', venue:'Martiniplaza, Groningen', date:'2026-11-21', price:null, status:'niet_in_verkoop', platform:'CM.com', note:'Originele datum 25/7 kwam te vervallen (vergunning geweigerd door gemeente). Mogelijk doorverplaatst naar 21/11 (indoor) per Partyflock; nog geen bevestigde officiële ticketpagina. Volgende week opnieuw checken.'},
-  {id:'fym-r2', organizer:'Free Your Mind', name:'R² Festival (Reinier Zonneveld)', venue:'Spaarnwoude, Amsterdam', date:'2026-08-15', price:null, status:'pre_register', platform:'CM.com', note:'Pre-register geopend.'},
-  {id:'fym-boris-brejcha', organizer:'Free Your Mind', name:'Boris Brejcha (4hrs) & Friends', venue:'Secret Location, Breda', date:'2026-09-05', price:53.50, status:'bijna_uitverkocht', platform:'CM.com', note:'Fase 2 — "last 500" tickets.'},
-  {id:'fym-schrotthagen', organizer:'Free Your Mind', name:'Schrotthagen', venue:'Sieraad, Amsterdam', date:'2026-09-18', price:24.00, status:'in_verkoop', platform:'CM.com', note:'Fase 1 (€21) uitverkocht, fase 2 (€24) actief in verkoop.'},
-  {id:'fym-teletech-ade', organizer:'Free Your Mind', name:'FYM x Teletech ADE', venue:"Trouw Studio's, Amsterdam", date:'2026-10-21', price:39.00, status:'in_verkoop', platform:'CM.com', note:'Fase 1 actief in verkoop.'},
-  {id:'fym-teletech-4tp', organizer:'Free Your Mind', name:'FYM x Teletech: 4 the People', venue:'Hemkade 48, Amsterdam', date:'2026-10-22', price:38.00, status:'in_verkoop', platform:'CM.com', note:'Fase 1 actief in verkoop.'},
-  {id:'fym-ferry-corsten', organizer:'Free Your Mind', name:'Ferry Corsten & Friends ADE', venue:'FYM Club, Amsterdam', date:'2026-10-23', price:27.00, status:'in_verkoop', platform:'CM.com', note:'Fase 1 actief in verkoop.'},
-  {id:'fym-kruelty-vieze', organizer:'Free Your Mind', name:'Kruelty B2B Vieze Asbak (3hrs)', venue:'Hemkade 48, Amsterdam', date:'2026-10-25', price:39.50, status:'in_verkoop', platform:'CM.com', note:'Fase 1 actief in verkoop.'},
-  {id:'fym-vieze-kruelty-afas', organizer:'Free Your Mind', name:'Vieze Asbak B2B Kruelty — AFAS Live', venue:'AFAS Live, Amsterdam', date:'2026-12-05', price:45.00, status:'uitverkocht', platform:'CM.com', note:'"Completely sold out." Laatste bekende openingsprijs ca. €45 (promo); prijs bij uitverkoop niet met zekerheid vastgesteld.'},
-  {id:'fym-levi-club-ade', organizer:'Free Your Mind', name:'LEVI at Free Your Mind Club ADE', venue:'Free Your Mind Club, Amsterdam', date:'2026-10-23', price:null, status:'pre_register', platform:'CM.com', note:'Nieuw ontdekt event. Site meldt verkoopstart 13 juli 17:00, maar knop verwijst nog naar pre-registratie.'},
+  {id:'fym-groningen', organizer:'Free Your Mind', name:'FYM Festival Groningen', venue:'Martiniplaza, Groningen', date:'2026-11-21', price:null, status:'in_verkoop', platform:'CM.com', note:'Locatie/datum lijkt bevestigd (Martiniplaza, 21 nov) maar het event stond deze week niet op de officiële eventlijst van freeyourmindfestival.nl. Wel al resale-aanbod zichtbaar op TicketSwap, wat duidt op gestarte verkoop. Exacte prijs niet gevonden; volgende week rechtstreeks bij Martiniplaza/CM.com verifiëren.'},
+  {id:'fym-r2', organizer:'Free Your Mind', name:'R² Festival (Reinier Zonneveld)', venue:'Spaarnwoude, Amsterdam', date:'2026-08-15', price:47.00, status:'bijna_uitverkocht', platform:'CM.com', note:'Wijziging: verkoop gestart, nu Fase 2 "last 250" à €47,00 (excl. servicekosten), rechtstreeks in CM.com-shop bevestigd. Vorige week nog pre-register zonder prijs.'},
+  {id:'fym-boris-brejcha', organizer:'Free Your Mind', name:'Boris Brejcha (4hrs) & Friends', venue:'Secret Location, Breda', date:'2026-09-05', price:53.50, status:'bijna_uitverkocht', platform:'CM.com', note:'Bevestigd ongewijzigd (rechtstreeks in CM.com-shop gecontroleerd): Fase 2 "last 500" tickets, €53,50. VIP-ticket (€99,00) nog los verkrijgbaar.'},
+  {id:'fym-schrotthagen', organizer:'Free Your Mind', name:'Schrotthagen', venue:'Sieraad, Amsterdam', date:'2026-09-18', price:24.00, status:'in_verkoop', platform:'CM.com', note:'Aangenomen ongewijzigd (fase 2, €24) — knop staat nog op "TICKETS" op de officiële eventlijst, maar exacte fase-prijs kon deze week niet los bevestigd worden.'},
+  {id:'fym-teletech-ade', organizer:'Free Your Mind', name:'FYM x Teletech ADE', venue:"Trouw Studio's, Amsterdam", date:'2026-10-21', price:39.00, status:'in_verkoop', platform:'CM.com', note:'Aangenomen ongewijzigd (fase 1, €39) — knop staat nog op "TICKETS", exacte fase-prijs kon deze week niet los bevestigd worden.'},
+  {id:'fym-teletech-4tp', organizer:'Free Your Mind', name:'FYM x Teletech: 4 the People', venue:'Hemkade 48, Amsterdam', date:'2026-10-22', price:38.00, status:'in_verkoop', platform:'CM.com', note:'Aangenomen ongewijzigd (fase 1, €38) — knop staat nog op "TICKETS", exacte fase-prijs kon deze week niet los bevestigd worden.'},
+  {id:'fym-ferry-corsten', organizer:'Free Your Mind', name:'Ferry Corsten & Friends ADE', venue:'FYM Club, Amsterdam', date:'2026-10-23', price:27.00, status:'in_verkoop', platform:'CM.com', note:'Aangenomen ongewijzigd (fase 1, €27) — knop staat nog op "TICKETS", exacte fase-prijs kon deze week niet los bevestigd worden.'},
+  {id:'fym-kruelty-vieze', organizer:'Free Your Mind', name:'Kruelty B2B Vieze Asbak (3hrs)', venue:'Hemkade 48, Amsterdam', date:'2026-10-25', price:39.50, status:'in_verkoop', platform:'CM.com', note:'Aangenomen ongewijzigd (fase 1, €39,50) — knop staat nog op "TICKETS", exacte fase-prijs kon deze week niet los bevestigd worden.'},
+  {id:'fym-vieze-kruelty-afas', organizer:'Free Your Mind', name:'Vieze Asbak B2B Kruelty — AFAS Live', venue:'AFAS Live, Amsterdam', date:'2026-12-05', price:45.00, status:'uitverkocht', platform:'CM.com', note:'Bevestigd ongewijzigd: "SOLD OUT" op de officiële eventlijst.'},
+  {id:'fym-levi-club-ade', organizer:'Free Your Mind', name:'LEVI at Free Your Mind Club ADE', venue:'Free Your Mind Club, Amsterdam', date:'2026-10-23', price:null, status:'in_verkoop', platform:'CM.com', note:'Wijziging: knop staat nu op "TICKETS" (was vorige week nog pre-registratie) — verkoop is dus gestart. Exacte fase-prijs kon deze week niet worden uitgelezen; volgende week vaststellen.'},
+  {id:'fym-olivier-weiter-ade', organizer:'Free Your Mind', name:'Olivier Weiter & Miss Melera (5hrs) ADE', venue:'Free Your Mind Club, Amsterdam', date:'2026-10-22', price:null, status:'pre_register', platform:'CM.com', note:'Nieuw ontdekt event tijdens deze meting (stond nog niet in onze lijst). Knop toont "PRE-REGISTER", nog geen shop live.'},
 
   // --- INTO THE WOODS ---
-  {id:'itw-amersfoort', organizer:'Into the Woods', name:'Into the Woods – Amersfoort', venue:'Amersfoort', date:'2026-09-18', price:81.00, status:'uitverkocht', platform:'Eventix', note:'"Volledig uitverkocht" — alle categorieën uitverkocht, alleen wachtlijst. Weekend-ticket was €162 excl. fee. Loopt over 18-19 sep.'},
-  {id:'itw-ade-ndsm', organizer:'Into the Woods', name:'Into the Woods ADE Festival', venue:'NDSM, Amsterdam', date:'2026-10-23', price:71.00, status:'bijna_uitverkocht', platform:'Eventix', note:'First wave & Early fases uitverkocht voor alle dagen; Regular (vrijdag €71,00 excl. fee) en Late nog te koop. Loopt over 23-24 okt. Let op: vorige meting toonde €77,50 voor dezelfde tier — dat was incl. €6,50 servicekosten, dus geen echte prijsdaling.'},
+  {id:'itw-amersfoort', organizer:'Into the Woods', name:'Into the Woods – Amersfoort', venue:'Amersfoort', date:'2026-09-18', price:81.00, status:'uitverkocht', platform:'Eventix', note:'Bevestigd ongewijzigd: officiële site toont "Waiting List", resale op Marktplaats voor €129-149 (2-persoons). Loopt over 18-19 sep.'},
+  {id:'itw-ade-ndsm', organizer:'Into the Woods', name:'Into the Woods ADE Festival', venue:'NDSM, Amsterdam', date:'2026-10-23', price:71.00, status:'bijna_uitverkocht', platform:'Eventix', note:'Kon deze week niet vernieuwd worden bevestigd (site-navigatie liet los scrapen van dit specifieke event niet toe); vorige status aangehouden (Regular €71,00 excl. fee, Late nog te koop).'},
 
   // --- ARTISTS FOR PRESIDENT ---
-  {id:'afp-lisa-korver', organizer:'Artists for President', name:'Lisa Korver All Day (ADE)', venue:'Warehouse Elementenstraat, Amsterdam', date:'2026-10-24', price:null, status:'uitverkocht', platform:'AFP shop', note:'"Sold out in less than one day" (artiest via Instagram). Geen laatste-faseprijs meer zichtbaar.'},
-  {id:'afp-skepta-mastiempo', organizer:'Artists for President', name:'Skepta pres. Más Tiempo (ADE)', venue:'Warehouse Elementenstraat, Amsterdam', date:'2026-10-24', price:70.00, status:'bijna_uitverkocht', platform:'Weeztix', note:'Third Release (€57,50) en Fourth Release (€65) uitverkocht; alleen Final Release (€70) nog beschikbaar.'},
-  {id:'afp-pegassi', organizer:'Artists for President', name:'Pegassi All Day (ADE)', venue:'Hemkade 48, Zaandam', date:'2026-10-23', price:null, status:'uitverkocht', platform:'Celebratix', note:'Datumcorrectie: officiële site/RA/DJGuide noemen vrijdag 23 okt (niet 24 okt). Uitverkocht, geen officiële laatste prijs gevonden.'},
+  {id:'afp-lisa-korver', organizer:'Artists for President', name:'Lisa Korver All Day (ADE)', venue:'Warehouse Elementenstraat, Amsterdam', date:'2026-10-24', price:null, status:'uitverkocht', platform:'AFP shop', note:'Bevestigd ongewijzigd: officiële eventlijst (artistsforpresident.com) toont nog steeds "SOLD OUT".'},
+  {id:'afp-skepta-mastiempo', organizer:'Artists for President', name:'Skepta pres. Más Tiempo (ADE)', venue:'Warehouse Elementenstraat, Amsterdam', date:'2026-10-24', price:70.00, status:'bijna_uitverkocht', platform:'Weeztix', note:'Bevestigd ongewijzigd: linktree/eventlijst toont nog steeds "Final Tickets" voor dit event, €70 aangehouden.'},
+  {id:'afp-pegassi', organizer:'Artists for President', name:'Pegassi All Day (ADE)', venue:'Hemkade 48, Zaandam', date:'2026-10-23', price:null, status:'uitverkocht', platform:'Celebratix', note:'Bevestigd ongewijzigd: officiële eventlijst toont nog steeds "SOLD OUT".'},
 
   // --- AUDIO OBSCURA ---
-  {id:'ao-by-day', organizer:'Audio Obscura', name:'Audio Obscura Festival – By Day', venue:'Van Nelle Fabriek, Rotterdam', date:'2026-08-29', price:79.45, status:'bijna_uitverkocht', platform:'Weeztix', note:'Pre-registratie t/m Late-fase uitverkocht; alleen "Early entrance" (€79,45) en Final ticket (€84,45) nog beschikbaar.'},
-  {id:'ao-combi', organizer:'Audio Obscura', name:'Audio Obscura Festival – Combi dag+nacht', venue:'Van Nelle Fabriek, Rotterdam', date:'2026-08-29', price:103.90, status:'in_verkoop', platform:'Weeztix', note:'Combi-ticket dag+nachtprogramma actief in verkoop.'},
-  {id:'ao-x-ade', organizer:'Audio Obscura', name:'Audio Obscura x ADE', venue:'RAWFACTORY, Amsterdam', date:'2026-10-22', price:null, status:'pre_register', platform:'Weeztix', note:'"Sign up for presale" — nog geen prijs gepubliceerd. Line-up bevat o.a. Patrick Mason B2B SPFDJ.'},
+  {id:'ao-by-day', organizer:'Audio Obscura', name:'Audio Obscura Festival – By Day', venue:'Van Nelle Fabriek, Rotterdam', date:'2026-08-29', price:79.45, status:'bijna_uitverkocht', platform:'Weeztix', note:'Bevestigd ongewijzigd (rechtstreeks in shop gecontroleerd): Early/Regular/Late uitverkocht, alleen "Early entrance" (€79,45) en Final ticket (€84,45) nog beschikbaar.'},
+  {id:'ao-combi', organizer:'Audio Obscura', name:'Audio Obscura Festival – Combi dag+nacht', venue:'Van Nelle Fabriek, Rotterdam', date:'2026-08-29', price:103.90, status:'in_verkoop', platform:'Weeztix', note:'Bevestigd ongewijzigd (rechtstreeks in shop gecontroleerd): Combiticket €103,90 + €11,00 servicekosten.'},
+  {id:'ao-x-ade', organizer:'Audio Obscura', name:'Audio Obscura x ADE', venue:'RAWFACTORY, Amsterdam', date:'2026-10-22', price:null, status:'pre_register', platform:'Weeztix', note:'Bevestigd ongewijzigd: audio-obscura.com toont nog steeds "SIGN UP FOR PRESALE", nog geen prijs gepubliceerd.'},
 
   // --- MAAS OPEN AIR ---
-  {id:'maas-summer', organizer:'Maas Open Air', name:'Maas Open Air – Summer Festival', venue:'Park Oude Plantage, Rotterdam', date:'2026-08-22', price:44.99, status:'in_verkoop', platform:'Paylogic', note:'"Late Maas"-ticket €44,99 (was €42,50 bij vorige meting). Groepsticket (min. 4 stuks) blijft goedkoper op €39,99 p.p.'},
+  {id:'maas-summer', organizer:'Maas Open Air', name:'Maas Open Air – Summer Festival', venue:'Park Oude Plantage, Rotterdam', date:'2026-08-22', price:44.99, status:'in_verkoop', platform:'Paylogic', note:'Bevestigd ongewijzigd (rechtstreeks in Paylogic-shop gecontroleerd): "Late Maas"-ticket €44,99.'},
 
   // --- LOVELAND ---
-  {id:'loveland-2026', organizer:'Loveland', name:'Loveland Festival 2026 (zaterdag)', venue:'Sloterpark, Amsterdam', date:'2026-08-08', price:96.00, status:'uitverkocht', platform:'CM.com', note:'Zaterdag dagticket (Final Release €96) uitverkocht. Backstage Pass (€195) en Weekend-ticket (€156, beide dagen) nog beschikbaar.'},
+  {id:'loveland-2026', organizer:'Loveland', name:'Loveland Festival 2026 (zaterdag)', venue:'Sloterpark, Amsterdam', date:'2026-08-08', price:96.00, status:'uitverkocht', platform:'CM.com', note:'Bevestigd ongewijzigd: officiële CM.com-shop toont nog steeds Saturday Final Release €96,00 (uitverkocht); weekendticket nog wel beschikbaar.'},
 
   // --- DGTL ---
-  {id:'dgtl-ams-2027', organizer:'DGTL', name:'DGTL Amsterdam 2027', venue:'NDSM Docklands, Amsterdam', date:'2027-03-26', price:null, status:'pre_register', platform:'—', note:'Alleen aanmeldknop, nog geen shop of prijzen. Let op: dgtl.nl verhuisd naar dgtl-festival.com.'},
+  {id:'dgtl-ams-2027', organizer:'DGTL', name:'DGTL Amsterdam 2027', venue:'NDSM Docklands, Amsterdam', date:'2027-03-26', price:null, status:'pre_register', platform:'—', note:'Aangenomen ongewijzigd (alleen aanmeldknop) — geen signaal van wijziging gevonden.'},
 
   // --- SOENDA ---
-  {id:'soenda-indoor', organizer:'Soenda', name:'Soenda Indoor Werkspoorkathedraal', venue:'Werkspoorkathedraal, Utrecht', date:'2026-11-21', price:67.90, status:'bijna_uitverkocht', platform:'Weeztix', note:'Early/Regular/Late-fases uitverkocht; alleen Final ticket (€67,90) nog beschikbaar.'},
+  {id:'soenda-indoor', organizer:'Soenda', name:'Soenda Indoor Werkspoorkathedraal', venue:'Werkspoorkathedraal, Utrecht', date:'2026-11-21', price:67.90, status:'bijna_uitverkocht', platform:'Weeztix', note:'Bevestigd ongewijzigd: officiële site/Instagram tonen nog steeds "Only final tickets left", €67,90 aangehouden.'},
 
   // --- OHM ---
-  {id:'ohm-herfstfestival', organizer:'OHM', name:'OHM Herfstfestival', venue:'Lijm & Cultuur, Delft', date:'2026-11-28', price:39.50, status:'uitverkocht', platform:'Weeztix', note:'Enige ticketsoort ("Trouwe honden ticket", €39,50) staat op uitverkocht.'},
+  {id:'ohm-herfstfestival', organizer:'OHM', name:'OHM Herfstfestival', venue:'Lijm & Cultuur, Delft', date:'2026-11-28', price:39.50, status:'uitverkocht', platform:'Weeztix', note:'Bevestigd ongewijzigd: officiële ticketpagina toont geen actieve shop meer (uitverkocht), Partyflock bevestigt "Uitverkocht!".'},
 
   // --- GASHOUDER ---
-  {id:'gashouder-armin-benwal', organizer:'Gashouder', name:'Armin van Buuren & Benwal (ADE)', venue:'Gashouder, Amsterdam', date:'2026-10-21', price:80.00, status:'bijna_uitverkocht', platform:'Vivenu', note:'First (€59,95) en Second Release (€68,50) uitverkocht; alleen Final Release (€80) nog te koop.'},
-  {id:'gashouder-ihatemodels-nico', organizer:'Gashouder', name:'I Hate Models & Nico Moreno (ADE)', venue:'Gashouder, Amsterdam', date:'2026-10-22', price:74.95, status:'bijna_uitverkocht', platform:'Vivenu', note:'First (€59,95) en Second Release (€68,50) uitverkocht; alleen Final Release (€74,95) nog te koop.'},
-  {id:'gashouder-joshbaker', organizer:'Gashouder', name:'Josh Baker (ADE)', venue:'Gashouder, Amsterdam', date:'2026-10-25', price:64.00, status:'bijna_uitverkocht', platform:'Vivenu', note:'First Release (€57,50) uitverkocht; alleen Final Release (€64) nog te koop.'},
-  {id:'gashouder-jobjobse', organizer:'Gashouder', name:'Job Jobse (ADE)', venue:'Gashouder, Amsterdam', date:'2026-10-23', price:null, status:'niet_in_verkoop', platform:'Vivenu', note:'Nieuw ontdekt event. Status: wachtlijst.'},
-  {id:'gashouder-mochakk', organizer:'Gashouder', name:'Mochakk Calling (ADE)', venue:'Gashouder, Amsterdam', date:'2026-10-23', price:null, status:'in_verkoop', platform:'Vivenu', note:'Nieuw ontdekt event. In verkoop, prijs nog niet vastgesteld deze week.'},
-  {id:'gashouder-sammyvirji', organizer:'Gashouder', name:'Sammy Virji Curates (ADE)', venue:'Gashouder, Amsterdam', date:'2026-10-24', price:null, status:'in_verkoop', platform:'Vivenu', note:'Nieuw ontdekt event. In verkoop, prijs nog niet vastgesteld deze week.'},
-  {id:'gashouder-frankyrizardo', organizer:'Gashouder', name:'Franky Rizardo presents: Flow (ADE)', venue:'Gashouder, Amsterdam', date:'2026-10-24', price:null, status:'niet_in_verkoop', platform:'Vivenu', note:'Nieuw ontdekt event. Status: wachtlijst.'},
+  {id:'gashouder-armin-benwal', organizer:'Gashouder', name:'Armin van Buuren & Benwal (ADE)', venue:'Gashouder, Amsterdam', date:'2026-10-21', price:80.00, status:'bijna_uitverkocht', platform:'Vivenu', note:'Bevestigd ongewijzigd: checkout doorlopen tot in de ticketkeuze — First Release (€59,95) en Second Release (€68,50) staan op "UITVERKOCHT", alleen Final Release (€80,00) is nog te selecteren. De "vanaf €59,95"-badge op de eventpagina is dus alleen een marketingprijs, geen actuele beschikbaarheid.'},
+  {id:'gashouder-ihatemodels-nico', organizer:'Gashouder', name:'I Hate Models & Nico Moreno (ADE)', venue:'Gashouder, Amsterdam', date:'2026-10-22', price:74.95, status:'bijna_uitverkocht', platform:'Vivenu', note:'Aangenomen ongewijzigd op basis van hetzelfde patroon als Armin/Benwal (marketingbadge ≠ actuele fase); Final Release €74,95 aangehouden.'},
+  {id:'gashouder-joshbaker', organizer:'Gashouder', name:'Josh Baker (ADE)', venue:'Gashouder, Amsterdam', date:'2026-10-25', price:64.00, status:'bijna_uitverkocht', platform:'Vivenu', note:'Aangenomen ongewijzigd: de "€57,50"-badge op de eventpagina komt overeen met de eerder al uitverkochte First Release, dus is dit weer de marketingbadge, niet de actuele fase. Final Release €64,00 aangehouden.'},
+  {id:'gashouder-jobjobse', organizer:'Gashouder', name:'Job Jobse (ADE)', venue:'Gashouder, Amsterdam', date:'2026-10-23', price:null, status:'niet_in_verkoop', platform:'Vivenu', note:'Bevestigd ongewijzigd: geen prijs op de Vivenu-shoppagina, status blijft wachtlijst.'},
+  {id:'gashouder-mochakk', organizer:'Gashouder', name:'Mochakk Calling (ADE)', venue:'Gashouder, Amsterdam', date:'2026-10-23', price:59.95, status:'in_verkoop', platform:'Vivenu', note:'Wijziging: prijs nu voor het eerst zichtbaar op de Vivenu-shop, €59,95.'},
+  {id:'gashouder-sammyvirji', organizer:'Gashouder', name:'Sammy Virji Curates (ADE)', venue:'Gashouder, Amsterdam', date:'2026-10-24', price:49.00, status:'in_verkoop', platform:'Vivenu', note:'Wijziging: prijs nu voor het eerst zichtbaar op de Vivenu-shop, €49,00.'},
+  {id:'gashouder-frankyrizardo', organizer:'Gashouder', name:'Franky Rizardo presents: Flow (ADE)', venue:'Gashouder, Amsterdam', date:'2026-10-24', price:null, status:'niet_in_verkoop', platform:'Vivenu', note:'Bevestigd ongewijzigd: geen prijs op de Vivenu-shoppagina, status blijft wachtlijst.'},
 ];
 
 const CHANGELOG = [
-  {type:'up', text:'Verknipt Beach Special zondag (19/7): laatste tier omhoog van €34,34 naar €44,44 (Community/Normal/Late fases uitverkocht sinds vorige meting, alleen "Last Minute Ticket" nog over).'},
-  {type:'up', text:'Schrotthagen (FYM, 18 sep): fase 1 (€21,00) raakte uitverkocht, fase 2 geopend op €24,00 (+€3,00).'},
-  {type:'up', text:'Maas Open Air – Summer Festival (22 aug): prijs omhoog van €42,50 naar €44,99 (+€2,49) voor het "Late Maas"-ticket; groepsticket (min. 4 stuks) blijft €39,99 p.p.'},
-  {type:'nieuw', text:'Ferry Corsten & Friends ADE (FYM, 23 okt): ging in verkoop op €27,00 (was vorige meting nog pre-register zonder prijs).'},
-  {type:'fase', text:'Soenda Indoor (21 nov): verkoop ging op 25 juni van start op €58,90 (Early); inmiddels via meerdere fases door naar €67,90 (Final ticket, enige fase die nu nog te koop is).'},
-  {type:'fase', text:'OHM Herfstfestival (28 nov): prijs voor het eerst vastgesteld op €39,50 — en meteen al uitverkocht sinds vorige meting.'},
-  {type:'nieuw', text:'Nieuw ontdekt: LEVI at Free Your Mind Club ADE (23 okt) — nog niet eerder getrackt.'},
-  {type:'nieuw', text:'Nieuw ontdekt: 4 extra Gashouder ADE-shows — Job Jobse, Mochakk Calling, Sammy Virji Curates, Franky Rizardo presents: Flow (23-24 okt).'},
-  {type:'alert', text:'Tegendraads Festival 2026 (25/7): prijs ongewijzigd (€68), maar nog maar 1 fase (Final Ticket) beschikbaar.'},
-  {type:'alert', text:'Skepta pres. Más Tiempo ADE (AFP): prijs ongewijzigd (€70) sinds vorige meting, blijft in de laatste fase.'},
-  {type:'alert', text:'Audio Obscura Festival By Day (29 aug): prijs ongewijzigd (€79,45), alleen Early entrance/Final ticket nog beschikbaar.'},
-  {type:'alert', text:'Gashouder ADE-reeks (Armin/Benwal, I Hate Models/Nico Moreno, Josh Baker): alle drie nog maar in Final Release-fase — geen data uit vorige meting beschikbaar om tegen af te zetten.'},
-  {type:'uit', text:'Verknipt Beach Special zaterdag (18/7): bleef uitverkocht — alleen wachtlijst via TicketSwap.'},
-  {type:'uit', text:'Into the Woods Amersfoort (18-19 sep): bleef uitverkocht; laatste bekende prijs is nu wel vastgesteld op €81,00 (vorige meting toonde nog geen prijs).'},
-  {type:'uit', text:'Lisa Korver All Day ADE en Pegassi All Day ADE (AFP): bleven beide uitverkocht, nog altijd geen prijs bekend.'},
-  {type:'uit', text:'Vieze Asbak B2B Kruelty @ AFAS Live (5 dec): bleef uitverkocht.'},
-  {type:'uit', text:'Loveland Festival zaterdag (8 aug): raakte uitverkocht — weekendticket (€156, beide dagen) nog wel te koop.'},
-  {type:'fase', text:'Into the Woods ADE Festival: huidige meting toont €71,00 (excl. fee) tegen €77,50 bij vorige meting voor dezelfde "Regular"-tier — dat verschil is de servicekosten (€6,50), dus geen echte prijsdaling.'},
-  {type:'fase', text:'FYM Festival Groningen: oorspronkelijke datum 25/7 kwam te vervallen (vergunning geweigerd); mogelijk doorverplaatst naar 21/11 in Martiniplaza — nog niet bevestigd, volgende week opnieuw checken.'},
-  {type:'pre', text:"Verknipt ADE Specials (24-25 okt), Verknipt Festival 2027 (5-6 jun) en Verknipt 'Arena' 2026 (TBA): nog altijd in pre-registratie/notify-fase, geen wijziging."},
-  {type:'pre', text:'DGTL Amsterdam 2027 en Awakenings Upclose 2027: nog steeds geen shop of prijzen live.'},
+  {type:'nieuw', text:'R² Festival by Reinier Zonneveld (FYM, 15 aug): verkoop gestart, nu Fase 2 "last 250" op €47,00 — vorige week nog pre-register zonder prijs.'},
+  {type:'nieuw', text:'LEVI at Free Your Mind Club ADE (23 okt): knop staat nu op "TICKETS" i.p.v. pre-registratie — verkoop is gestart, exacte prijs volgt.'},
+  {type:'nieuw', text:'Verknipt ADE Specials zaterdag + zondag (24-25 okt): losse Weeztix-shops zijn deze week live gegaan (was alleen Laylo notify-me).'},
+  {type:'nieuw', text:'Awakenings Upclose 2027 (15-16 mei): Loyalty/Early Bird uitverkocht, reguliere verkoop ging 15 juli van start.'},
+  {type:'nieuw', text:'Gashouder — Mochakk Calling (23 okt): prijs nu bekend, €59,95.'},
+  {type:'nieuw', text:'Gashouder — Sammy Virji Curates (24 okt): prijs nu bekend, €49,00.'},
+  {type:'nieuw', text:'Nieuw ontdekt: Olivier Weiter & Miss Melera (5hrs) ADE bij Free Your Mind Club (22 okt) — nog niet eerder getrackt, status pre-register.'},
+  {type:'fase', text:'FYM Festival Groningen: locatie/datum lijkt bevestigd op Martiniplaza, 21 nov — stond deze week niet op de officiële FYM-eventlijst, maar TicketSwap toont al resale-aanbod. Volgende week rechtstreeks verifiëren.'},
+  {type:'alert', text:'Tegendraads Festival (25 jul): kon deze week niet automatisch worden ververst — de Paylogic-widget laadde leeg (bij Maas Open Air, ook Paylogic, werkte dit wel). Vorige status (Final Ticket €68) aangehouden.'},
+  {type:'alert', text:'Gashouder ADE-reeks: doorgeklikt tot in de checkout bij Armin/Benwal bevestigt dat de "vanaf"-badge op de eventpagina de allereerste (uitverkochte) release-prijs toont, niet de actuele fase. Voor I Hate Models/Nico Moreno en Josh Baker is dit patroon aangenomen maar niet los doorgeklikt.'},
+  {type:'uit', text:'Verknipt Beach Special (zaterdag+zondag, 18-19 jul) en Awakenings Festival 2026 (10 jul) zijn op verzoek uit de actieve tracking verwijderd — beide events hebben al plaatsgevonden.'},
+  {type:'pre', text:'Verknipt Festival 2027, Verknipt ‘Arena’ 2026, DGTL Amsterdam 2027, Audio Obscura x ADE: nog altijd in pre-registratie/notify-fase, geen wijziging.'},
 ];
 
 // Bronnen die deze week gecontroleerd zijn
-const HEALTH_OK = true; // alle 13 bronnen waren deze week bereikbaar
-const HEALTH_ISSUES = []; // bv. [{name:'Awakenings', note:'time-out bij laden'}]
+const HEALTH_OK = false; // niet alle bronnen konden deze week volledig geverifieerd worden
+const HEALTH_ISSUES = [
+  {name:'Tegendraads / Paylogic', note:'ticketwidget bleef leeg laden bij scrapen'},
+  {name:'Verknipt ADE Specials / Weeztix', note:'widget-accordion toonde geen leesbare prijstekst'},
+  {name:'Into the Woods ADE NDSM / Eventix', note:'kon deze week niet los worden herbevestigd door tijdgebrek'},
+];
+
 
 // ---------------------------------------------------------------------
 // RENDER LOGIC
