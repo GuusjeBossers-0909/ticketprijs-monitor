@@ -5,149 +5,149 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Concurrentie Ticketprijs-Monitor</title>
 <style>
-  :root{
-    --bg:#f4f5f7; --card:#ffffff; --border:#e6e8eb; --text:#111318; --muted:#8a8f98;
-    --green-bg:#dcf5e6; --green-text:#0e8a3e;
-    --red-bg:#fde3e3; --red-text:#c0392b;
-    --amber-bg:#fdecc8; --amber-text:#b5760a;
-    --purple-bg:#ece7fb; --purple-text:#6d4fc7;
-    --blue-bg:#dbeafe; --blue-text:#1d4ed8;
-  }
-  *{box-sizing:border-box;}
-  body{
-    margin:0; padding:32px; background:var(--bg); color:var(--text);
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-  }
-  .wrap{max-width:1200px; margin:0 auto;}
+:root{
+--bg:#f4f5f7; --card:#ffffff; --border:#e6e8eb; --text:#111318; --muted:#8a8f98;
+--green-bg:#dcf5e6; --green-text:#0e8a3e;
+--red-bg:#fde3e3; --red-text:#c0392b;
+--amber-bg:#fdecc8; --amber-text:#b5760a;
+--purple-bg:#ece7fb; --purple-text:#6d4fc7;
+--blue-bg:#dbeafe; --blue-text:#1d4ed8;
+}
+*{box-sizing:border-box;}
+body{
+margin:0; padding:32px; background:var(--bg); color:var(--text);
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+.wrap{max-width:1200px; margin:0 auto;}
 
-  .header{margin-bottom:20px;}
-  .header h1{font-size:24px; font-weight:700; margin:0 0 6px 0;}
-  .header-sub{color:var(--muted); font-size:14px;}
+.header{margin-bottom:20px;}
+.header h1{font-size:24px; font-weight:700; margin:0 0 6px 0;}
+.header-sub{color:var(--muted); font-size:14px;}
 
-  .card{background:var(--card); border:1px solid var(--border); border-radius:12px;}
+.card{background:var(--card); border:1px solid var(--border); border-radius:12px;}
 
-  .stats-row{display:grid; grid-template-columns:repeat(6, 1fr); gap:12px; margin:20px 0;}
-  .stat-card{padding:16px 18px;}
-  .stat-num{font-size:26px; font-weight:700; line-height:1.1;}
-  .stat-label{color:var(--muted); font-size:13px; margin-top:4px;}
+.stats-row{display:grid; grid-template-columns:repeat(6, 1fr); gap:12px; margin:20px 0;}
+.stat-card{padding:16px 18px;}
+.stat-num{font-size:26px; font-weight:700; line-height:1.1;}
+.stat-label{color:var(--muted); font-size:13px; margin-top:4px;}
 
-  .changelog-card{padding:18px 20px; margin-bottom:14px;}
-  .card-title{font-weight:700; font-size:15px; margin-bottom:12px;}
-  .changelog{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:9px;}
-  .changelog li{display:flex; gap:10px; align-items:baseline; font-size:13.5px; line-height:1.4;}
-  .ctag{display:inline-block; padding:2px 8px; border-radius:6px; font-size:11px; font-weight:700; text-transform:uppercase; white-space:nowrap; min-width:52px; text-align:center;}
-  .ctag.fase{background:var(--amber-bg); color:var(--amber-text);}
-  .ctag.nieuw{background:var(--blue-bg); color:var(--blue-text);}
-  .ctag.pre{background:var(--purple-bg); color:var(--purple-text);}
-  .ctag.uit{background:var(--red-bg); color:var(--red-text);}
-  .ctag.up{background:var(--red-bg); color:var(--red-text);}
-  .ctag.down{background:var(--green-bg); color:var(--green-text);}
-  .calert{color:var(--red-text); font-weight:700; font-size:12px; white-space:nowrap;}
-  .empty-note{color:var(--muted); font-size:13.5px; font-style:italic;}
+.changelog-card{padding:18px 20px; margin-bottom:14px;}
+.card-title{font-weight:700; font-size:15px; margin-bottom:12px;}
+.changelog{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:9px;}
+.changelog li{display:flex; gap:10px; align-items:baseline; font-size:13.5px; line-height:1.4;}
+.ctag{display:inline-block; padding:2px 8px; border-radius:6px; font-size:11px; font-weight:700; text-transform:uppercase; white-space:nowrap; min-width:52px; text-align:center;}
+.ctag.fase{background:var(--amber-bg); color:var(--amber-text);}
+.ctag.nieuw{background:var(--blue-bg); color:var(--blue-text);}
+.ctag.pre{background:var(--purple-bg); color:var(--purple-text);}
+.ctag.uit{background:var(--red-bg); color:var(--red-text);}
+.ctag.up{background:var(--red-bg); color:var(--red-text);}
+.ctag.down{background:var(--green-bg); color:var(--green-text);}
+.calert{color:var(--red-text); font-weight:700; font-size:12px; white-space:nowrap;}
+.empty-note{color:var(--muted); font-size:13.5px; font-style:italic;}
 
-  .health-line{margin-top:14px; padding-top:12px; border-top:1px solid var(--border); font-size:13px; color:var(--text); display:flex; align-items:center; gap:8px;}
-  .health-dot{width:8px; height:8px; border-radius:50%; background:var(--green-text); display:inline-block; flex-shrink:0;}
-  .health-dot.bad{background:var(--red-text);}
+.health-line{margin-top:14px; padding-top:12px; border-top:1px solid var(--border); font-size:13px; color:var(--text); display:flex; align-items:center; gap:8px;}
+.health-dot{width:8px; height:8px; border-radius:50%; background:var(--green-text); display:inline-block; flex-shrink:0;}
+.health-dot.bad{background:var(--red-text);}
 
-  .add-toggle{
-    background:var(--card); border:1px solid var(--border); border-radius:12px; padding:12px 20px;
-    font-size:13.5px; font-weight:600; color:var(--text); cursor:pointer; margin-bottom:14px;
-    display:flex; align-items:center; gap:6px; user-select:none;
-  }
-  .add-toggle .chev{color:var(--muted); transition:transform .15s ease;}
-  .add-toggle.open .chev{transform:rotate(90deg);}
-  .add-panel{background:var(--card); border:1px solid var(--border); border-radius:12px; padding:16px 20px; margin:-6px 0 14px 0; font-size:13.5px; color:var(--muted);}
+.add-toggle{
+background:var(--card); border:1px solid var(--border); border-radius:12px; padding:12px 20px;
+font-size:13.5px; font-weight:600; color:var(--text); cursor:pointer; margin-bottom:14px;
+display:flex; align-items:center; gap:6px; user-select:none;
+}
+.add-toggle .chev{color:var(--muted); transition:transform .15s ease;}
+.add-toggle.open .chev{transform:rotate(90deg);}
+.add-panel{background:var(--card); border:1px solid var(--border); border-radius:12px; padding:16px 20px; margin:-6px 0 14px 0; font-size:13.5px; color:var(--muted);}
 
-  .filters-row{display:flex; align-items:center; gap:10px; margin-bottom:14px; flex-wrap:wrap;}
-  .pill-group{display:flex; gap:6px; flex-wrap:wrap;}
-  .pill{
-    border:1px solid var(--border); background:var(--card); color:var(--text); font-size:13px; font-weight:600;
-    padding:7px 14px; border-radius:20px; cursor:pointer;
-  }
-  .pill.active{background:#111318; color:#fff; border-color:#111318;}
-  select{
-    border:1px solid var(--border); background:var(--card); color:var(--text); font-size:13px;
-    padding:7px 12px; border-radius:20px; cursor:pointer;
-  }
+.filters-row{display:flex; align-items:center; gap:10px; margin-bottom:14px; flex-wrap:wrap;}
+.pill-group{display:flex; gap:6px; flex-wrap:wrap;}
+.pill{
+border:1px solid var(--border); background:var(--card); color:var(--text); font-size:13px; font-weight:600;
+padding:7px 14px; border-radius:20px; cursor:pointer;
+}
+.pill.active{background:#111318; color:#fff; border-color:#111318;}
+select{
+border:1px solid var(--border); background:var(--card); color:var(--text); font-size:13px;
+padding:7px 12px; border-radius:20px; cursor:pointer;
+}
 
-  table{width:100%; border-collapse:collapse; background:var(--card); border:1px solid var(--border); border-radius:12px; overflow:hidden;}
-  th, td{padding:12px 16px; text-align:left; vertical-align:top;}
-  th{color:var(--muted); font-weight:700; font-size:11px; text-transform:uppercase; letter-spacing:.4px; border-bottom:1px solid var(--border);}
-  td{font-size:14px; border-bottom:1px solid var(--border);}
-  tr:last-child td{border-bottom:none;}
-  tr:hover td{background:#fafafa;}
-  .ev-name{font-weight:700;}
-  .ev-venue{color:var(--muted); font-size:12.5px; margin-top:2px;}
-  .date-main{font-weight:600;}
-  .date-sub{color:var(--muted); font-size:12.5px; margin-top:2px;}
-  .price{font-weight:700; font-variant-numeric:tabular-nums;}
-  .price.na, .delta-na{color:var(--muted); font-weight:400;}
-  .delta-up{color:var(--red-text); font-weight:600;}
-  .delta-down{color:var(--green-text); font-weight:600;}
-  .status-pill{display:inline-block; padding:3px 10px; border-radius:14px; font-size:12px; font-weight:700; white-space:nowrap;}
-  .status-in_verkoop{background:var(--green-bg); color:var(--green-text);}
-  .status-bijna_uitverkocht{background:var(--amber-bg); color:var(--amber-text);}
-  .status-uitverkocht{background:var(--red-bg); color:var(--red-text);}
-  .status-pre_register, .status-niet_in_verkoop{background:var(--purple-bg); color:var(--purple-text);}
-  .platform{color:var(--muted); font-size:13px;}
+table{width:100%; border-collapse:collapse; background:var(--card); border:1px solid var(--border); border-radius:12px; overflow:hidden;}
+th, td{padding:12px 16px; text-align:left; vertical-align:top;}
+th{color:var(--muted); font-weight:700; font-size:11px; text-transform:uppercase; letter-spacing:.4px; border-bottom:1px solid var(--border);}
+td{font-size:14px; border-bottom:1px solid var(--border);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#fafafa;}
+.ev-name{font-weight:700;}
+.ev-venue{color:var(--muted); font-size:12.5px; margin-top:2px;}
+.date-main{font-weight:600;}
+.date-sub{color:var(--muted); font-size:12.5px; margin-top:2px;}
+.price{font-weight:700; font-variant-numeric:tabular-nums;}
+.price.na, .delta-na{color:var(--muted); font-weight:400;}
+.delta-up{color:var(--red-text); font-weight:600;}
+.delta-down{color:var(--green-text); font-weight:600;}
+.status-pill{display:inline-block; padding:3px 10px; border-radius:14px; font-size:12px; font-weight:700; white-space:nowrap;}
+.status-in_verkoop{background:var(--green-bg); color:var(--green-text);}
+.status-bijna_uitverkocht{background:var(--amber-bg); color:var(--amber-text);}
+.status-uitverkocht{background:var(--red-bg); color:var(--red-text);}
+.status-pre_register, .status-niet_in_verkoop{background:var(--purple-bg); color:var(--purple-text);}
+.platform{color:var(--muted); font-size:13px;}
 
-  footer{margin-top:20px; color:var(--muted); font-size:12px; text-align:center;}
+footer{margin-top:20px; color:var(--muted); font-size:12px; text-align:center;}
 
-  @media (max-width:900px){
-    .stats-row{grid-template-columns:repeat(3, 1fr);}
-  }
+@media (max-width:900px){
+.stats-row{grid-template-columns:repeat(3, 1fr);}
+}
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <div class="header">
-    <h1>Concurrentie Ticketprijs-Monitor</h1>
-    <div class="header-sub" id="header-sub"></div>
-  </div>
+<div class="header">
+<h1>Concurrentie Ticketprijs-Monitor</h1>
+<div class="header-sub" id="header-sub"></div>
+</div>
 
-  <div class="stats-row" id="stats-row"></div>
+<div class="stats-row" id="stats-row"></div>
 
-  <div class="card changelog-card">
-    <div class="card-title">Wat is er veranderd</div>
-    <ul class="changelog" id="changelog"></ul>
-    <div class="health-line" id="health-line"></div>
-  </div>
+<div class="card changelog-card">
+<div class="card-title">Wat is er veranderd</div>
+<ul class="changelog" id="changelog"></ul>
+<div class="health-line" id="health-line"></div>
+</div>
 
-  <div class="add-toggle" id="add-toggle"><span class="chev">›</span> Event of organisatie toevoegen</div>
-  <div class="add-panel" id="add-panel" style="display:none;">
-    Nieuwe organisaties of events toevoegen kan door het aan Claude te vragen in de chat — geef de naam, ticketshop-URL en (indien bekend) datum door, dan wordt dit in de eerstvolgende meting meegenomen.
-  </div>
+<div class="add-toggle" id="add-toggle"><span class="chev">›</span> Event of organisatie toevoegen</div>
+<div class="add-panel" id="add-panel" style="display:none;">
+Nieuwe organisaties of events toevoegen kan door het aan Claude te vragen in de chat — geef de naam, ticketshop-URL en (indien bekend) datum door, dan wordt dit in de eerstvolgende meting meegenomen.
+</div>
 
-  <div class="filters-row">
-    <div class="pill-group" id="status-pills">
-      <button class="pill active" data-status="alle">Alle</button>
-      <button class="pill" data-status="in_verkoop">In verkoop</button>
-      <button class="pill" data-status="bijna_uitverkocht">Bijna uitverkocht</button>
-      <button class="pill" data-status="uitverkocht">Uitverkocht</button>
-      <button class="pill" data-status="pre_register">Pre-register</button>
-      <button class="pill" data-status="niet_in_verkoop">Niet in verkoop</button>
-    </div>
-    <select id="organizer-filter"></select>
-    <select id="month-filter"></select>
-  </div>
+<div class="filters-row">
+<div class="pill-group" id="status-pills">
+<button class="pill active" data-status="alle">Alle</button>
+<button class="pill" data-status="in_verkoop">In verkoop</button>
+<button class="pill" data-status="bijna_uitverkocht">Bijna uitverkocht</button>
+<button class="pill" data-status="uitverkocht">Uitverkocht</button>
+<button class="pill" data-status="pre_register">Pre-register</button>
+<button class="pill" data-status="niet_in_verkoop">Niet in verkoop</button>
+</div>
+<select id="organizer-filter"></select>
+<select id="month-filter"></select>
+</div>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Event</th>
-        <th>Organisator</th>
-        <th>Datum</th>
-        <th>Actieve prijs</th>
-        <th>Δ vs vorige</th>
-        <th>Status</th>
-        <th>Platform</th>
-      </tr>
-    </thead>
-    <tbody id="events-tbody"></tbody>
-  </table>
+<table>
+<thead>
+<tr>
+<th>Event</th>
+<th>Organisator</th>
+<th>Datum</th>
+<th>Actieve prijs</th>
+<th>Δ vs vorige</th>
+<th>Status</th>
+<th>Platform</th>
+</tr>
+</thead>
+<tbody id="events-tbody"></tbody>
+</table>
 
-  <footer id="footer-note"></footer>
+<footer id="footer-note"></footer>
 </div>
 
 <script>
@@ -155,130 +155,149 @@
 // DATA — bijgewerkt door de wekelijkse scheduled task "ticketprijs-monitor-weekly"
 // ---------------------------------------------------------------------
 
-const SNAPSHOT = '2026-07-29';
-const PREV_DATE = '2026-07-20'; // datum van de vorige meting
+const SNAPSHOT = '2026-08-03';
+const PREV_DATE = '2026-07-29'; // datum van de vorige meting
 
-// PREV: eventId -> laatst bekende prijs (van de meting op 20-7-2026).
+// PREV: eventId -> laatst bekende prijs (van de meting op 29-7-2026, vóór de wijzigingen van deze week).
 // null = event bestond nog niet, of had toen nog geen actieve prijs (bv. pre-register/niet in verkoop).
+// (Correctie: dit veld was per abuis gevuld met de NIEUWE prijzen i.p.v. de vorige-week-prijzen,
+// waardoor de Δ-kolom geen enkele prijsstijging liet zien. Hersteld naar de daadwerkelijke 29-7-waarden.)
 const PREV = {
-  'verknipt-pulse-diffrent': 29.29,
-  'tegendraads-2026': 68.00,
-  'fym-r2': 47.00,
-  'fym-boris-brejcha': 53.50,
-  'fym-schrotthagen': 24.00,
-  'fym-teletech-ade': 39.00,
-  'fym-teletech-4tp': 38.00,
-  'fym-ferry-corsten': 27.00,
-  'fym-kruelty-vieze': 39.50,
-  'fym-vieze-kruelty-afas': 45.00,
-  'itw-amersfoort': 81.00,
-  'itw-ade-ndsm': 71.00,
-  'afp-skepta-mastiempo': 70.00,
-  'ao-by-day': 79.45,
-  'ao-combi': 103.90,
-  'maas-summer': 44.99,
-  'loveland-2026': 96.00,
-  'soenda-indoor': 67.90,
-  'ohm-herfstfestival': 39.50,
-  'gashouder-armin-benwal': 80.00,
-  'gashouder-ihatemodels-nico': 74.95,
-  'gashouder-joshbaker': 64.00,
-  'gashouder-mochakk': 59.95,
-  'gashouder-sammyvirji': 49.00,
+'verknipt-pulse-diffrent': 29.29,
+'verknipt-ade-specials': 66.11,
+'awakenings-upclose-2027': 59.95,
+'fym-groningen': 46.50,
+'fym-r2': 47.00,
+'fym-boris-brejcha': 53.50,
+'fym-schrotthagen': 24.00,
+'fym-teletech-ade': 39.00,
+'fym-teletech-4tp': 38.00,
+'fym-ferry-corsten': 27.00,
+'fym-kruelty-vieze': 39.50,
+'fym-vieze-kruelty-afas': 45.00,
+'fym-levi-club-ade': 28.50,
+'fym-olivier-weiter-ade': 21.00,
+'itw-amersfoort': 81.00,
+'itw-ade-ndsm': 71.00,
+'afp-lisa-korver': 66.00,
+'afp-skepta-mastiempo': 70.00,
+'afp-pegassi': 119.00,
+'ao-by-day': 79.45,
+'ao-combi': 103.90,
+'ao-rawfactory-patrickmason': 59.95,
+'ao-rawfactory-exhale-amelielens': 64.95,
+'ao-rawfactory-moment-whomadewho': 59.95,
+'maas-summer': 44.99,
+'loveland-2026': 96.00,
+'soenda-indoor': 67.90,
+'ohm-herfstfestival': 39.50,
+'gashouder-armin-benwal': 80.00,
+'gashouder-ihatemodels-nico': 74.95,
+'gashouder-joshbaker': 64.00,
+'gashouder-jobjobse': 49.00,
+'gashouder-mochakk': 59.95,
+'gashouder-sammyvirji': 49.00,
+'gashouder-frankyrizardo': 59.95,
 };
 
 const EVENTS = [
-  // --- VERKNIPT ---
-  {id:'verknipt-pulse-diffrent', organizer:'Verknipt', name:'PULSE x Diffrent All Day Long', venue:'Bronze Beach, Bloemendaal', date:'2026-08-15', price:29.29, status:'in_verkoop', platform:'Weeztix', note:'Bevestigd ongewijzigd: officiële ticketpagina (verknipt.org) toont dit event nog steeds actief; Weeztix-widget liet de exacte prijstekst deze week niet los scrapen, vorige prijs (€29,29) aangehouden.'},
-  {id:'verknipt-ade-specials', organizer:'Verknipt', name:'Verknipt ADE Specials (zaterdag 24/10 + zondag 25/10)', venue:'AFAS Live, Amsterdam', date:'2026-10-24', price:66.11, status:'in_verkoop', platform:'Weeztix', note:'Prijs alsnog gevonden via AFAS Live\'s eigen agenda en bevestigd door Partyflock: Saturday-fases zijn Community €57,02 (uitverkocht) → Normal €62,07 (uitverkocht) → Late €66,11 (actueel, laagst beschikbaar) → Final €71,16. Sunday ligt één fase hoger: Community €62,07 → Normal €66,11 → Late €71,16 → Final €77,22 (nog in eerste fase). Getoonde prijs (€66,11) is de laagste nu nog beschikbare optie (Saturday Late).'},
-  {id:'verknipt-festival-2027', organizer:'Verknipt', name:'Verknipt Festival 2027', venue:'Strijkviertel, Utrecht', date:'2027-06-05', price:null, status:'pre_register', platform:'Weeztix', note:'Kon deze week niet worden teruggevonden in de "ALL EVENTS"-lijst op verknipt.org (die loopt tot Verknipt Croatia juli 2027 en Arena TBA). Mogelijk nog niet publiek herbevestigd; vorige status aangehouden, volgende week checken of het event nog bestaat.'},
-  {id:'verknipt-arena-2026', organizer:'Verknipt', name:"Verknipt 'Arena' 2026", venue:'TBA', date:'TBA', price:null, status:'pre_register', platform:'Weeztix', note:'Bevestigd ongewijzigd: datum en locatie nog TBA, "PRE-REGISTER NOW" op de officiële ticketpagina.'},
+// --- VERKNIPT ---
+{id:'verknipt-pulse-diffrent', organizer:'Verknipt', name:'PULSE x Diffrent All Day Long', venue:'Bronze Beach, Bloemendaal', date:'2026-08-15', price:34.34, status:'in_verkoop', platform:'Weeztix', note:'Prijsstijging: Community (€24,24) en Normal (€29,29, vorige prijs) nu uitverkocht op de Weeztix-checkout; laagst beschikbare tier is nu Late Ticket €34,34 excl. €4,50 servicekosten.'},
+{id:'verknipt-ade-specials', organizer:'Verknipt', name:'Verknipt ADE Specials (zaterdag 24/10 + zondag 25/10)', venue:'AFAS Live, Amsterdam', date:'2026-10-24', price:66.11, status:'in_verkoop', platform:'Weeztix', note:'Bevestigd ongewijzigd: rechtstreekse Weeztix-checkout voor Saturday toont nog steeds Late Ticket als laagst beschikbare tier (€61,61 excl. + €4,50 sf = €66,11 incl., exact de eerder geregistreerde prijs). Community en Normal blijven uitverkocht.'},
+{id:'verknipt-festival-2027', organizer:'Verknipt', name:'Verknipt Festival 2027', venue:'Strijkviertel, Utrecht', date:'2027-06-05', price:null, status:'pre_register', platform:'Weeztix', note:'Bevestigd ongewijzigd: event staat nog op verknipt.org (5&6 juni 2027, Strijkviertel Utrecht); "PRE-REGISTER NOW" linkt naar Laylo-signup, nog geen ticketverkoop of prijs zichtbaar.'},
+{id:'verknipt-arena-2026', organizer:'Verknipt', name:"Verknipt 'Arena' 2026", venue:'TBA', date:'TBA', price:null, status:'pre_register', platform:'Weeztix', note:'Bevestigd ongewijzigd op verknipt.org/arena/: datum en locatie nog TBA, alleen pre-register (Mailchimp-signup), geen tickets of prijs beschikbaar.'},
 
-  // --- AWAKENINGS ---
-  {id:'awakenings-upclose-2027', organizer:'Awakenings', name:'Awakenings Upclose 2027', venue:'Houtrak, Spaarnwoude', date:'2027-05-15', price:59.95, status:'in_verkoop', platform:'Weeztix', note:'Prijs alsnog gevonden via Guestzone: Regular-fase 1 €59,95 (fase 2 €64,95, fase 3 €69,95 zijn de volgende stappen). Loyalty/Early Bird waren al uitverkocht, Regular ging 15 juli van start — vermoedelijk dus nog fase 1.'},
+// --- AWAKENINGS ---
+{id:'awakenings-upclose-2027', organizer:'Awakenings', name:'Awakenings Upclose 2027', venue:'Houtrak, Spaarnwoude', date:'2027-05-15', price:59.95, status:'in_verkoop', platform:'Weeztix', note:'Bevestigd ongewijzigd: Guestzone-cache bevestigt Regular fase 1 nog steeds €59,95.'},
 
-  // --- TEGENDRAADS ---
-  {id:'tegendraads-2026', organizer:'Tegendraads', name:'Tegendraads Festival 2026', venue:'Autotron, Rosmalen', date:'2026-07-25', price:68.00, status:'bijna_uitverkocht', platform:'Paylogic', note:'Let op: dit event vond plaats op 25 juli 2026, dus inmiddels 4 dagen geleden (vandaag: 29 juli). De Paylogic-widget bleef ook deze week leeg laden bij het scrapen, dus de laatst bekende status (Final Ticket €68 excl. fee) is aangehouden. Kandidaat om volgende week uit de actieve tracking te verwijderen nu het event voorbij is.'},
+// --- TEGENDRAADS ---
+{id:'tegendraads-overdrive', organizer:'Tegendraads', name:'Overdrive', venue:'Vasim, Nijmegen', date:'2026-10-30', price:35.00, status:'in_verkoop', platform:'Paylogic', note:'Nieuw toegevoegd op verzoek (bron: wijzijntegendraads.nl). Rechtstreeks op shop.paylogic.com gecontroleerd: Loyalty Ticket €34,00 incl. €4 sf (€30,00 excl.) is uitverkocht; Regular Ticket €39,00 incl. €4 sf (€35,00 excl.) is de laagst beschikbare optie.'},
+{id:'tegendraads-onbegrensd', organizer:'Tegendraads', name:'Onbegrensd', venue:'Vasim, Nijmegen', date:'2026-10-31', price:30.00, status:'in_verkoop', platform:'Paylogic', note:'Nieuw toegevoegd op verzoek (bron: wijzijntegendraads.nl). Rechtstreeks op shop.paylogic.com gecontroleerd: Loyalty Ticket €29,00 incl. €4 sf (€25,00 excl.) is uitverkocht; Regular Ticket €34,00 incl. €4 sf (€30,00 excl.) is de laagst beschikbare optie.'},
 
-  // --- FREE YOUR MIND ---
-  {id:'fym-groningen', organizer:'Free Your Mind', name:'FYM Festival Groningen', venue:'Martiniplaza, Groningen', date:'2026-11-21', price:46.50, status:'bijna_uitverkocht', platform:'CM.com', note:'Let op: dit is een ander event dan de FYM-editie op 25 juli in Stadspark/De Drafbaan (waarvoor de gemeente juist de vergunning weigerde) — dit is de editie in Martiniplaza op 21 nov, nog altijd niet op de officiële eventlijst te vinden. Exacte prijs dit jaar niet gepubliceerd gevonden; getoonde prijs (€46,50) is een schatting op basis van de Fase 2-prijs van de vorige editie (2025: VV1 €43, VV2 €46,50), aangezien Facebook meldt dat Fase 2 nu 99% verkocht is. Volgende week rechtstreeks bij Martiniplaza/CM.com verifiëren.'},
-  {id:'fym-r2', organizer:'Free Your Mind', name:'R² Festival (Reinier Zonneveld)', venue:'Spaarnwoude, Amsterdam', date:'2026-08-15', price:47.00, status:'bijna_uitverkocht', platform:'CM.com', note:'Aangenomen ongewijzigd: knop staat nog op "TICKETS" op de officiële eventlijst, Fase 2 "last 250" €47,00 aangehouden — exacte fase kon deze week niet los herbevestigd worden.'},
-  {id:'fym-boris-brejcha', organizer:'Free Your Mind', name:'Boris Brejcha (4hrs) & Friends', venue:'Secret Location, Breda', date:'2026-09-05', price:53.50, status:'bijna_uitverkocht', platform:'CM.com', note:'Aangenomen ongewijzigd: knop staat nog op "TICKETS", Fase 2 "last 500" €53,50 aangehouden.'},
-  {id:'fym-schrotthagen', organizer:'Free Your Mind', name:'Schrotthagen', venue:'Sieraad, Amsterdam', date:'2026-09-18', price:24.00, status:'in_verkoop', platform:'CM.com', note:'Aangenomen ongewijzigd (fase 2, €24) — knop staat nog op "TICKETS" op de officiële eventlijst, maar exacte fase-prijs kon deze week niet los bevestigd worden.'},
-  {id:'fym-teletech-ade', organizer:'Free Your Mind', name:'FYM x Teletech ADE', venue:"Trouw Studio's, Amsterdam", date:'2026-10-21', price:39.00, status:'in_verkoop', platform:'CM.com', note:'Aangenomen ongewijzigd (fase 1, €39) — knop staat nog op "TICKETS", exacte fase-prijs kon deze week niet los bevestigd worden.'},
-  {id:'fym-teletech-4tp', organizer:'Free Your Mind', name:'FYM x Teletech: 4 the People', venue:'Hemkade 48, Amsterdam', date:'2026-10-22', price:38.00, status:'in_verkoop', platform:'CM.com', note:'Aangenomen ongewijzigd (fase 1, €38) — knop staat nog op "TICKETS", exacte fase-prijs kon deze week niet los bevestigd worden.'},
-  {id:'fym-ferry-corsten', organizer:'Free Your Mind', name:'Ferry Corsten & Friends ADE', venue:'FYM Club, Amsterdam', date:'2026-10-23', price:27.00, status:'in_verkoop', platform:'CM.com', note:'Aangenomen ongewijzigd (fase 1, €27) — knop staat nog op "TICKETS", exacte fase-prijs kon deze week niet los bevestigd worden.'},
-  {id:'fym-kruelty-vieze', organizer:'Free Your Mind', name:'Kruelty B2B Vieze Asbak (3hrs)', venue:'Hemkade 48, Amsterdam', date:'2026-10-25', price:39.50, status:'in_verkoop', platform:'CM.com', note:'Aangenomen ongewijzigd (fase 1, €39,50) — knop staat nog op "TICKETS", exacte fase-prijs kon deze week niet los bevestigd worden.'},
-  {id:'fym-vieze-kruelty-afas', organizer:'Free Your Mind', name:'Vieze Asbak B2B Kruelty — AFAS Live', venue:'AFAS Live, Amsterdam', date:'2026-12-05', price:45.00, status:'uitverkocht', platform:'CM.com', note:'Bevestigd ongewijzigd: "SOLD OUT" op de officiële eventlijst.'},
-  {id:'fym-levi-club-ade', organizer:'Free Your Mind', name:'LEVI at Free Your Mind Club ADE', venue:'Free Your Mind Club, Amsterdam', date:'2026-10-23', price:28.50, status:'in_verkoop', platform:'CM.com', note:'Prijs alsnog gevonden: rechtstreeks in de CM.com-ticketshop doorgeklikt, Fase 1 €28,50 + €3,50 servicekosten.'},
-  {id:'fym-olivier-weiter-ade', organizer:'Free Your Mind', name:'Olivier Weiter & Miss Melera (5hrs) ADE', venue:'Free Your Mind Club, Amsterdam', date:'2026-10-22', price:21.00, status:'in_verkoop', platform:'CM.com', note:'Prijs alsnog gevonden: rechtstreeks in de CM.com-ticketshop doorgeklikt, Fase 1 €21,00 + €3,50 servicekosten. Knop staat sinds deze week op "TICKETS" (was vorige week nog "PRE-REGISTER").'},
-  {id:'fym-kingsday-2027', organizer:'Free Your Mind', name:'Free Your Mind Kingsday', venue:'TBA', date:'2027-04-27', price:null, status:'pre_register', platform:'CM.com', note:'Nieuw ontdekt op de officiële eventlijst: "PRE-REGISTER!" voor Kingsday 2027 (27 april). Nog geen locatie of prijs bekend.'},
-  {id:'fym-festival-2027-arnhem', organizer:'Free Your Mind', name:'Free Your Mind Festival 2027', venue:'Stadsblokken, Arnhem', date:'2027-06-05', price:null, status:'niet_in_verkoop', platform:'—', note:'Nieuw ontdekt op de officiële eventlijst: aankondiging dat FYM Festival op 5 & 6 juni 2027 terugkeert naar Arnhem (Stadsblokken). Nog geen tickets- of pre-registerknop zichtbaar, dus als "niet in verkoop" getrackt.'},
+// --- FREE YOUR MIND ---
+{id:'fym-groningen', organizer:'Free Your Mind', name:'FYM Festival Groningen', venue:'Martiniplaza, Groningen', date:'2026-11-21', price:46.50, status:'bijna_uitverkocht', platform:'CM.com', note:'Kon deze week niet herbevestigd worden: event ontbreekt nu op de officiële /events/-pagina (404), en de gevonden CM.com-shop bleek een gearchiveerde pagina van de 2025-editie. Partyflock bevestigt dat het event nog gepland staat (21 nov, Martiniplaza), geen "uitverkocht"-label. Vorige prijs (schatting o.b.v. 2025 Fase 2) aangehouden; volgende week rechtstreeks bij Martiniplaza verifiëren.'},
+{id:'fym-r2', organizer:'Free Your Mind', name:'R² Festival (Reinier Zonneveld)', venue:'Spaarnwoude, Amsterdam', date:'2026-08-15', price:49.50, status:'bijna_uitverkocht', platform:'CM.com', note:'Prijsstijging: CM.com toont nu nog maar 1 tarief, "Late Ticket" €49,50 + €3,50 servicekosten (was Fase 2 "last 250" €47,00).'},
+{id:'fym-boris-brejcha', organizer:'Free Your Mind', name:'Boris Brejcha (4hrs) & Friends', venue:'Secret Location, Breda', date:'2026-09-05', price:56.50, status:'bijna_uitverkocht', platform:'CM.com', note:'Prijsstijging: CM.com toont "Late - last 400" €56,50 + €3,50 servicekosten (was Fase 2 "last 500" €53,50).'},
+{id:'fym-schrotthagen', organizer:'Free Your Mind', name:'Schrotthagen', venue:'Sieraad, Amsterdam', date:'2026-09-18', price:24.00, status:'in_verkoop', platform:'CM.com', note:'Bevestigd ongewijzigd: CM.com toont nog steeds "Phase 2" €24,00 + €3,50 servicekosten.'},
+{id:'fym-teletech-ade', organizer:'Free Your Mind', name:'FYM x Teletech ADE', venue:"Trouw Studio's, Amsterdam", date:'2026-10-21', price:42.00, status:'bijna_uitverkocht', platform:'CM.com', note:'Wijziging: CM.com toont "Phase 2 - 98%" €42,00 + €3,50 servicekosten (was Fase 1 €39,00) — expliciet 98% verkocht, status opgehoogd naar bijna uitverkocht.'},
+{id:'fym-teletech-4tp', organizer:'Free Your Mind', name:'FYM x Teletech: 4 the People', venue:'Hemkade 48, Amsterdam', date:'2026-10-22', price:38.00, status:'in_verkoop', platform:'CM.com', note:'Bevestigd ongewijzigd qua prijs: CM.com toont nu "Phase 2 tickets" €38,00 + €3,50 servicekosten (Fase 1 dus stilletjes uitverkocht, maar prijs ongewijzigd).'},
+{id:'fym-ferry-corsten', organizer:'Free Your Mind', name:'Ferry Corsten & Friends ADE', venue:'FYM Club, Amsterdam', date:'2026-10-23', price:27.00, status:'in_verkoop', platform:'CM.com', note:'Bevestigd ongewijzigd: CM.com toont nog steeds "Phase 1" €27,00 + €3,50 servicekosten.'},
+{id:'fym-kruelty-vieze', organizer:'Free Your Mind', name:'Kruelty B2B Vieze Asbak (3hrs)', venue:'Hemkade 48, Amsterdam', date:'2026-10-25', price:40.50, status:'bijna_uitverkocht', platform:'CM.com', note:'Wijziging: CM.com toont "Late - last 500" €40,50 + €3,50 servicekosten (was Fase 1 €39,50) — fase-naam wijst op laatste voorraad, status opgehoogd naar bijna uitverkocht.'},
+{id:'fym-vieze-kruelty-afas', organizer:'Free Your Mind', name:'Vieze Asbak B2B Kruelty — AFAS Live', venue:'AFAS Live, Amsterdam', date:'2026-12-05', price:45.00, status:'uitverkocht', platform:'CM.com', note:'Bevestigd ongewijzigd: "SOLD OUT" op de officiële eventlijst.'},
+{id:'fym-levi-club-ade', organizer:'Free Your Mind', name:'LEVI at Free Your Mind Club ADE', venue:'Free Your Mind Club, Amsterdam', date:'2026-10-23', price:28.50, status:'in_verkoop', platform:'CM.com', note:'Bevestigd ongewijzigd: CM.com toont nog steeds "Phase 1" €28,50 + €3,50 servicekosten.'},
+{id:'fym-olivier-weiter-ade', organizer:'Free Your Mind', name:'Olivier Weiter & Miss Melera (5hrs) ADE', venue:'Free Your Mind Club, Amsterdam', date:'2026-10-22', price:21.00, status:'in_verkoop', platform:'CM.com', note:'Bevestigd ongewijzigd: CM.com toont nog steeds "Phase 1" €21,00 + €3,50 servicekosten.'},
+{id:'fym-kingsday-2027', organizer:'Free Your Mind', name:'Free Your Mind Kingsday', venue:'TBA', date:'2027-04-27', price:null, status:'pre_register', platform:'CM.com', note:'Bevestigd ongewijzigd: officiële site toont nog steeds "PRE-REGISTER!", nog geen ticketverkoop of locatie bekend.'},
+{id:'fym-festival-2027-arnhem', organizer:'Free Your Mind', name:'Free Your Mind Festival 2027', venue:'Stadsblokken, Arnhem', date:'2027-06-05', price:null, status:'niet_in_verkoop', platform:'—', note:'Bevestigd ongewijzigd: eventpagina bevat alleen aankondigingstekst, geen tickets- of pre-registerknop zichtbaar.'},
 
-  // --- INTO THE WOODS ---
-  {id:'itw-amersfoort', organizer:'Into the Woods', name:'Into the Woods – Amersfoort', venue:'Amersfoort', date:'2026-09-18', price:81.00, status:'uitverkocht', platform:'Eventix', note:'Aangenomen ongewijzigd: geen tegensignaal gevonden deze week. Vorige status (Waiting List, resale op Marktplaats €129-149) aangehouden.'},
-  {id:'itw-ade-ndsm', organizer:'Into the Woods', name:'Into the Woods ADE Festival', venue:'NDSM, Amsterdam', date:'2026-10-23', price:71.00, status:'bijna_uitverkocht', platform:'Eventix', note:'Bevestigd ongewijzigd: rechtstreeks in de Eventix-ticketwidget gecontroleerd. Friday "First wave" (€74,50 incl. fee) en "Early" (€76,00 incl. fee) staan op SOLD OUT; "Regular" (€77,50 incl. €6,50 fee = €71,00 excl. fee) is de laagste nog beschikbare optie, "Late" (€81,50 incl. fee) ook nog te koop. Prijs €71,00 dus bevestigd ongewijzigd.'},
+// --- INTO THE WOODS ---
+{id:'itw-amersfoort', organizer:'Into the Woods', name:'Into the Woods – Amersfoort', venue:'Amersfoort', date:'2026-09-18', price:81.00, status:'uitverkocht', platform:'Eventix', note:'Bevestigd ongewijzigd: intothewoods.nl/amersfoort toont expliciet "Waiting List" i.p.v. Shop-knop.'},
+{id:'itw-ade-ndsm', organizer:'Into the Woods', name:'Into the Woods ADE Festival', venue:'NDSM, Amsterdam', date:'2026-10-23', price:71.00, status:'bijna_uitverkocht', platform:'Eventix', note:'De officiële Eventix-widget op intothewoods.nl laadde deze week niet (leeg canvas/SPA-probleem). Partyflock toont voor vrijdag 23 okt €74,50 incl. servicekosten (dat komt overeen met de eerder geregistreerde €71,00 excl. fee, dus vermoedelijk dezelfde "Regular"-tier); Facebook noemt inmiddels "Final Release Tickets", wat op een verder gevorderde fase duidt. Laatst bekende excl.-fee-prijs (€71,00) aangehouden bij gebrek aan een rechtstreekse checkout-bevestiging.'},
 
-  // --- ARTISTS FOR PRESIDENT ---
-  {id:'afp-lisa-korver', organizer:'Artists for President', name:'Lisa Korver All Day (ADE)', venue:'Warehouse Elementenstraat, Amsterdam', date:'2026-10-24', price:66.00, status:'uitverkocht', platform:'AFP shop', note:'Geen originele verkoopprijs meer terug te vinden nu het event uitverkocht is (shop toont geen bedrag meer). Prijs (€66,00) is een schatting op basis van de Marktplaats-prijscheck (gemiddelde marktwaarde van doorverkochte tickets voor dit event) — geen bevestigde officiële prijs.'},
-  {id:'afp-skepta-mastiempo', organizer:'Artists for President', name:'Skepta pres. Más Tiempo (ADE)', venue:'Warehouse Elementenstraat, Amsterdam', date:'2026-10-24', price:70.00, status:'bijna_uitverkocht', platform:'Weeztix', note:'Bevestigd ongewijzigd: officiële eventlijst (artistsforpresident.com) toont nog steeds een actieve "TICKETS & INFO"-knop voor dit event, €70 aangehouden (exacte fase kon deze week niet opnieuw worden uitgelezen).'},
-  {id:'afp-pegassi', organizer:'Artists for President', name:'Pegassi All Day (ADE)', venue:'Hemkade 48, Zaandam', date:'2026-10-23', price:119.00, status:'uitverkocht', platform:'Celebratix', note:'Geen originele verkoopprijs meer terug te vinden nu het event uitverkocht is (shop toont geen bedrag meer). Prijs (€119,00) komt van een individuele doorverkoop-advertentie op Marktplaats — mogelijk hoger dan de oorspronkelijke officiële prijs, geen bevestigde bron voor de originele ticketprijs gevonden.'},
+// --- ARTISTS FOR PRESIDENT ---
+{id:'afp-lisa-korver', organizer:'Artists for President', name:'Lisa Korver All Day (ADE)', venue:'Warehouse Elementenstraat, Amsterdam', date:'2026-10-24', price:66.00, status:'uitverkocht', platform:'AFP shop', note:'Bevestigd via de officiële bron artistsforpresident.com/events (expliciete SOLD OUT-badge) — niet langer alleen een Marktplaats-schatting nodig. Prijs (€66,00) ongewijzigd aangehouden.'},
+{id:'afp-skepta-mastiempo', organizer:'Artists for President', name:'Skepta pres. Más Tiempo (ADE)', venue:'Warehouse Elementenstraat, Amsterdam', date:'2026-10-24', price:70.00, status:'uitverkocht', platform:'Weeztix', note:'Statuswijziging: nu volledig SOLD OUT volgens artistsforpresident.com/events (was vorige week bijna_uitverkocht). Laatst bekende prijs €70,00 behouden.'},
+{id:'afp-pegassi', organizer:'Artists for President', name:'Pegassi All Day (ADE)', venue:'Hemkade 48, Zaandam', date:'2026-10-23', price:119.00, status:'uitverkocht', platform:'Celebratix', note:'Bevestigd SOLD OUT via de officiële bron artistsforpresident.com/events, prijs ongewijzigd.'},
 
-  // --- AUDIO OBSCURA ---
-  {id:'ao-by-day', organizer:'Audio Obscura', name:'Audio Obscura Festival – By Day', venue:'Van Nelle Fabriek, Rotterdam', date:'2026-08-29', price:79.45, status:'bijna_uitverkocht', platform:'Weeztix', note:'Bevestigd ongewijzigd: rechtstreeks op community.audio-obscura.com gecontroleerd, prijs nog steeds €79,45. Officiële site toont inmiddels "FINAL TICKETS" in de navigatie (was eerder Early/Final naast elkaar), wat duidt op een verder gevorderde fase, maar de prijs zelf is niet gewijzigd.'},
-  {id:'ao-combi', organizer:'Audio Obscura', name:'Audio Obscura Festival – Combi dag+nacht', venue:'Van Nelle Fabriek, Rotterdam', date:'2026-08-29', price:103.90, status:'in_verkoop', platform:'Weeztix', note:'Bevestigd ongewijzigd: Combiticket nog steeds €103,90 + servicekosten.'},
-  {id:'ao-rawfactory-patrickmason', organizer:'Audio Obscura', name:'Audio Obscura w/ Patrick Mason b2b SPFDJ, Tjade and friends & Anetha', venue:'RAWFACTORY, Amsterdam', date:'2026-10-22', price:59.95, status:'in_verkoop', platform:'BASH', note:'Nieuw ontdekt: de eerder als vage placeholder getrackte "Audio Obscura x ADE" bleek deze week drie losse, concrete RAWFACTORY-data te zijn geworden met eigen prijzen (gevonden via community.audio-obscura.com). Prijs €59,95.'},
-  {id:'ao-rawfactory-exhale-amelielens', organizer:'Audio Obscura', name:'Audio Obscura x EXHALE by Amelie Lens', venue:'RAWFACTORY, Amsterdam', date:'2026-10-23', price:64.95, status:'in_verkoop', platform:'BASH', note:'Nieuw ontdekt via community.audio-obscura.com, prijs €64,95. Onderdeel van dezelfde ADE-reeks als de andere twee nieuwe RAWFACTORY-events.'},
-  {id:'ao-rawfactory-moment-whomadewho', organizer:'Audio Obscura', name:'Audio Obscura x The Moment by WhoMadeWho', venue:'RAWFACTORY, Amsterdam', date:'2026-10-24', price:59.95, status:'in_verkoop', platform:'BASH', note:'Nieuw ontdekt via community.audio-obscura.com, prijs €59,95. Onderdeel van dezelfde ADE-reeks als de andere twee nieuwe RAWFACTORY-events.'},
+// --- AUDIO OBSCURA ---
+{id:'ao-by-day', organizer:'Audio Obscura', name:'Audio Obscura Festival – By Day', venue:'Van Nelle Fabriek, Rotterdam', date:'2026-08-29', price:185.45, status:'bijna_uitverkocht', platform:'Weeztix', note:'Let op grote prijsstijging: General en Group tickets zijn op Weeztix nu uitverkocht, alleen het Backstage-tarief (Final tickets) is nog te koop à €185,45 + €5,50 servicekosten. Dit is geen reguliere fase-stap maar het overslaan naar een volledig ander (premium) tickettype nu de reguliere tiers uitverkocht zijn.'},
+{id:'ao-combi', organizer:'Audio Obscura', name:'Audio Obscura Festival – Combi dag+nacht', venue:'Van Nelle Fabriek, Rotterdam', date:'2026-08-29', price:103.90, status:'uitverkocht', platform:'Weeztix', note:'Statuswijziging: "Festival + night program"-ticket is nu uitverkocht op Weeztix (was vorige week nog in verkoop). Laatst bekende prijs €103,90 behouden.'},
+{id:'ao-rawfactory-patrickmason', organizer:'Audio Obscura', name:'Audio Obscura w/ Patrick Mason b2b SPFDJ, Tjade and friends & Anetha', venue:'RAWFACTORY, Amsterdam', date:'2026-10-22', price:59.95, status:'in_verkoop', platform:'BASH', note:'Bevestigd ongewijzigd: First release (€54,95) is uitverkocht, Second release €59,95 + €7 servicekosten nog beschikbaar — zelfde prijs als vorige meting.'},
+{id:'ao-rawfactory-exhale-amelielens', organizer:'Audio Obscura', name:'Audio Obscura x EXHALE by Amelie Lens', venue:'RAWFACTORY, Amsterdam', date:'2026-10-23', price:64.95, status:'in_verkoop', platform:'BASH', note:'Bevestigd ongewijzigd: First/Second release uitverkocht, Third release €64,95 + €7 servicekosten nog beschikbaar.'},
+{id:'ao-rawfactory-moment-whomadewho', organizer:'Audio Obscura', name:'Audio Obscura x The Moment by WhoMadeWho', venue:'RAWFACTORY, Amsterdam', date:'2026-10-24', price:59.95, status:'in_verkoop', platform:'BASH', note:'Bevestigd ongewijzigd: First release (€54,95) uitverkocht, Second release €59,95 + €7 servicekosten nog beschikbaar.'},
 
-  // --- MAAS OPEN AIR ---
-  {id:'maas-summer', organizer:'Maas Open Air', name:'Maas Open Air – Summer Festival', venue:'Park Oude Plantage, Rotterdam', date:'2026-08-22', price:44.99, status:'bijna_uitverkocht', platform:'Paylogic', note:'Wijziging: Facebook/Instagram van de organisator meldt "only 50 late tickets left" — status opgehoogd naar bijna uitverkocht. "Late Maas"-ticket blijft geprijsd op €44,99.'},
+// --- MAAS OPEN AIR ---
+{id:'maas-summer', organizer:'Maas Open Air', name:'Maas Open Air – Summer Festival', venue:'Park Oude Plantage, Rotterdam', date:'2026-08-22', price:47.50, status:'bijna_uitverkocht', platform:'Paylogic', note:'Prijsstijging: "Late Maas"-tier is voorbij, nu geldt "Final Maas" €47,50 excl. servicekosten (Group Maas 4-pack €42,50 p.p.).'},
 
-  // --- LOVELAND ---
-  {id:'loveland-2026', organizer:'Loveland', name:'Loveland Festival 2026 (zaterdag)', venue:'Sloterpark, Amsterdam', date:'2026-08-08', price:96.00, status:'uitverkocht', platform:'CM.com', note:'Bevestigd ongewijzigd: officiële site (loveland.nl) meldt "Saturday & Sunday in Final Release" en Instagram toont "completely sold out, get the final tickets now" — zelfde patroon als vorige week, Saturday Final Release €96,00 aangehouden.'},
+// --- LOVELAND ---
+{id:'loveland-2026', organizer:'Loveland', name:'Loveland Festival 2026 (zaterdag)', venue:'Sloterpark, Amsterdam', date:'2026-08-08', price:96.00, status:'uitverkocht', platform:'CM.com', note:'Bevestigd ongewijzigd, 5 dagen voor het event: Saturday Final Release én Backstage Pass staan beide op "Uitverkocht" op CM.com, geen nieuwe release zichtbaar.'},
 
-  // --- DGTL ---
-  {id:'dgtl-ams-2027', organizer:'DGTL', name:'DGTL Amsterdam 2027', venue:'NDSM Docklands, Amsterdam', date:'2027-03-26', price:null, status:'pre_register', platform:'—', note:'Aangenomen ongewijzigd (alleen aanmeldknop) — geen signaal van wijziging gevonden.'},
+// --- DGTL ---
+{id:'dgtl-ams-2027', organizer:'DGTL', name:'DGTL Amsterdam 2027', venue:'NDSM Docklands, Amsterdam', date:'2027-03-26', price:null, status:'pre_register', platform:'—', note:'Bevestigd ongewijzigd: dgtl.nl toont alleen een "SIGN UP"-knop, nog geen ticketverkoop.'},
 
-  // --- SOENDA ---
-  {id:'soenda-indoor', organizer:'Soenda', name:'Soenda Indoor Werkspoorkathedraal', venue:'Werkspoorkathedraal, Utrecht', date:'2026-11-21', price:67.90, status:'bijna_uitverkocht', platform:'Weeztix', note:'Bevestigd ongewijzigd: officiële site/social media tonen nog steeds "Only final tickets left" / "Final tickets selling fast", €67,90 aangehouden.'},
+// --- SOENDA ---
+{id:'soenda-indoor', organizer:'Soenda', name:'Soenda Indoor Werkspoorkathedraal', venue:'Werkspoorkathedraal, Utrecht', date:'2026-11-21', price:67.90, status:'bijna_uitverkocht', platform:'Weeztix', note:'soenda.net meldt sinds 26 juni "Only final tickets left". Weeztix-widget laadde deze week leeg; Partyflock toont tiers van €63,80-€72,80 incl. servicekosten zonder uitverkocht-label. Laatst bekende excl.-fee-prijs (€67,90) aangehouden bij gebrek aan een directe checkout-bevestiging.'},
 
-  // --- OHM ---
-  {id:'ohm-herfstfestival', organizer:'OHM', name:'OHM Herfstfestival', venue:'Lijm & Cultuur, Delft', date:'2026-11-28', price:39.50, status:'uitverkocht', platform:'Weeztix', note:'Bevestigd ongewijzigd: Partyflock bevestigt nog steeds "Uitverkocht!".'},
+// --- OHM ---
+{id:'ohm-herfstfestival', organizer:'OHM', name:'OHM Herfstfestival', venue:'Lijm & Cultuur, Delft', date:'2026-11-28', price:39.50, status:'uitverkocht', platform:'Weeztix', note:'Bevestigd ongewijzigd: Partyflock bevestigt nog steeds expliciet "Uitverkocht!" (voorverkoop €44 incl. servicekosten).'},
 
-  // --- GASHOUDER ---
-  {id:'gashouder-armin-benwal', organizer:'Gashouder', name:'Armin van Buuren & Benwal (ADE)', venue:'Gashouder, Amsterdam', date:'2026-10-21', price:80.00, status:'bijna_uitverkocht', platform:'Vivenu', note:'Aangenomen ongewijzigd: badge op tickets.gashouder.nl toont nog steeds €59,95 (de bekende marketingprijs van de al uitverkochte First Release, niet de actuele fase). Final Release €80,00 aangehouden.'},
-  {id:'gashouder-ihatemodels-nico', organizer:'Gashouder', name:'I Hate Models & Nico Moreno (ADE)', venue:'Gashouder, Amsterdam', date:'2026-10-22', price:74.95, status:'bijna_uitverkocht', platform:'Vivenu', note:'Aangenomen ongewijzigd: badge toont nog steeds €59,95 (marketingprijs, zelfde patroon als Armin/Benwal). Final Release €74,95 aangehouden.'},
-  {id:'gashouder-joshbaker', organizer:'Gashouder', name:'Josh Baker (ADE)', venue:'Gashouder, Amsterdam', date:'2026-10-25', price:64.00, status:'bijna_uitverkocht', platform:'Vivenu', note:'Aangenomen ongewijzigd: badge toont nog steeds €57,50 (marketingprijs van de al uitverkochte First Release). Final Release €64,00 aangehouden.'},
-  {id:'gashouder-jobjobse', organizer:'Gashouder', name:'Job Jobse (ADE)', venue:'Gashouder, Amsterdam', date:'2026-10-23', price:49.00, status:'uitverkocht', platform:'Vivenu', note:'Statuscorrectie: eerder als "niet in verkoop/wachtlijst" getrackt omdat de Vivenu-shop geen prijs toont, maar dat bleek te komen doordat het event al uitverkocht is — Partyflock bevestigt expliciet "Uitverkocht! Voorverkoop: €49,-". Prijs en status hierop aangepast.'},
-  {id:'gashouder-mochakk', organizer:'Gashouder', name:'Mochakk Calling (ADE)', venue:'Gashouder, Amsterdam', date:'2026-10-23', price:59.95, status:'in_verkoop', platform:'Vivenu', note:'Bevestigd ongewijzigd: rechtstreeks op tickets.gashouder.nl gecontroleerd, prijs nog steeds €59,95.'},
-  {id:'gashouder-sammyvirji', organizer:'Gashouder', name:'Sammy Virji Curates (ADE)', venue:'Gashouder, Amsterdam', date:'2026-10-24', price:49.00, status:'in_verkoop', platform:'Vivenu', note:'Bevestigd ongewijzigd: rechtstreeks op tickets.gashouder.nl gecontroleerd, prijs nog steeds €49,00.'},
-  {id:'gashouder-frankyrizardo', organizer:'Gashouder', name:'Franky Rizardo presents: Flow (ADE)', venue:'Gashouder, Amsterdam', date:'2026-10-24', price:59.95, status:'uitverkocht', platform:'Vivenu', note:'Statuscorrectie: het ontbreken van een prijs/knop op de officiële Vivenu-shop bleek niet "nog niet in verkoop" te betekenen maar "uitverkocht" — bevestigd door zowel Partyflock ("Flow uitverkocht") als Resident Advisor ("[Sold Out]"). Laatst bekende voorverkoopprijs (via djguide.nl): €59,95.'},
+// --- GASHOUDER ---
+{id:'gashouder-armin-benwal', organizer:'Gashouder', name:'Armin van Buuren & Benwal (ADE)', venue:'Gashouder, Amsterdam', date:'2026-10-21', price:80.00, status:'bijna_uitverkocht', platform:'Vivenu', note:'Bevestigd ongewijzigd via de Vivenu-checkout: First (€59,95) en Second (€68,50) zijn uitverkocht, alleen Final Release €80,00 nog te koop.'},
+{id:'gashouder-ihatemodels-nico', organizer:'Gashouder', name:'I Hate Models & Nico Moreno (ADE)', venue:'Gashouder, Amsterdam', date:'2026-10-22', price:74.95, status:'bijna_uitverkocht', platform:'Vivenu', note:'Bevestigd ongewijzigd via de Vivenu-checkout: First (€59,95) en Second (€68,50) uitverkocht, alleen Final Release €74,95 nog te koop.'},
+{id:'gashouder-joshbaker', organizer:'Gashouder', name:'Josh Baker (ADE)', venue:'Gashouder, Amsterdam', date:'2026-10-25', price:64.00, status:'bijna_uitverkocht', platform:'Vivenu', note:'Bevestigd ongewijzigd via de Vivenu-checkout: First Release €57,50 uitverkocht, alleen Final Release €64,00 nog te koop.'},
+{id:'gashouder-jobjobse', organizer:'Gashouder', name:'Job Jobse (ADE)', venue:'Gashouder, Amsterdam', date:'2026-10-23', price:49.00, status:'uitverkocht', platform:'Vivenu', note:'Bevestigd ongewijzigd: pagina toont expliciet "Uitverkocht" met wachtlijst-link. Laatst bekende prijs €49,00 behouden.'},
+{id:'gashouder-mochakk', organizer:'Gashouder', name:'Mochakk Calling (ADE)', venue:'Gashouder, Amsterdam', date:'2026-10-23', price:74.95, status:'bijna_uitverkocht', platform:'Vivenu', note:'Statuswijziging: First (€59,95) en Second (€68,50) nu uitverkocht op de Vivenu-checkout; actuele laagste prijs is Final Release €74,95 (was vorige week in verkoop @ €59,95). De badge op de site bleef nog de oude €59,95 tonen — checkout-prijs is leidend geweest.'},
+{id:'gashouder-sammyvirji', organizer:'Gashouder', name:'Sammy Virji Curates (ADE)', venue:'Gashouder, Amsterdam', date:'2026-10-24', price:64.00, status:'bijna_uitverkocht', platform:'Vivenu', note:'Statuswijziging: First (€49,00) en Second (€54,50) nu uitverkocht op de Vivenu-checkout; actuele laagste prijs is Final Release €64,00 (was vorige week in verkoop @ €49,00). De badge op de site bleef nog de oude €49,00 tonen — checkout-prijs is leidend geweest.'},
+{id:'gashouder-frankyrizardo', organizer:'Gashouder', name:'Franky Rizardo presents: Flow (ADE)', venue:'Gashouder, Amsterdam', date:'2026-10-24', price:59.95, status:'uitverkocht', platform:'Vivenu', note:'Bevestigd ongewijzigd: pagina toont expliciet "Uitverkocht" + wachtlijst. Laatst bekende voorverkoopprijs (via djguide.nl) €59,95 behouden.'},
 ];
 
 const CHANGELOG = [
-  {type:'nieuw', text:'Nieuw ontdekt: Free Your Mind Kingsday 2027 (27 apr) — pre-register geopend op de officiële eventlijst, nog geen locatie/prijs.'},
-  {type:'nieuw', text:'Nieuw ontdekt: Free Your Mind Festival 2027 keert terug naar Stadsblokken, Arnhem (5-6 juni) — alleen aangekondigd, nog niet in verkoop.'},
-  {type:'nieuw', text:'Audio Obscura x ADE (RAWFACTORY) bleek deze week drie losse, concrete events te zijn geworden met eigen prijzen: Patrick Mason b2b SPFDJ (22 okt, €59,95), EXHALE by Amelie Lens (23 okt, €64,95) en The Moment by WhoMadeWho (24 okt, €59,95) — de oude vage placeholder is hierdoor vervangen.'},
-  {type:'fase', text:'Olivier Weiter & Miss Melera ADE (FYM Club, 22 okt): knop staat nu op "TICKETS" i.p.v. "PRE-REGISTER" — verkoop is gestart. Prijs alsnog gevonden: €21,00 (Fase 1).'},
-  {type:'fase', text:'FYM Festival Groningen (21 nov): Facebook meldt "Phase 2 is 99% sold!" — status opgehoogd naar bijna uitverkocht. Prijs (€46,50) is een schatting op basis van vorig jaar\'s Fase 2, exacte prijs dit jaar nog niet gepubliceerd gevonden.'},
-  {type:'fase', text:'Maas Open Air – Summer Festival (22 aug): organisator meldt op social media "only 50 late tickets left" — status opgehoogd naar bijna uitverkocht, prijs (€44,99) ongewijzigd.'},
-  {type:'nieuw', text:'Correctie: Verknipt ADE Specials, Awakenings Upclose 2027 en LEVI at Free Your Mind Club ADE stonden ten onrechte op "geen prijs bekend" — dieper gezocht (checkout, Partyflock, AFAS Live, Guestzone) en nu alsnog voorzien van een prijs: resp. €66,11, €59,95 en €28,50.'},
-  {type:'uit', text:'Statuscorrectie Gashouder: Job Jobse en Franky Rizardo presents: Flow stonden ten onrechte als "niet in verkoop/wachtlijst" — het ontbreken van een prijsknop op de Vivenu-shop bleek te komen doordat beide al uitverkocht zijn (bevestigd door Partyflock). Status en laatst bekende prijs (€49,00 resp. €59,95) bijgewerkt.'},
-  {type:'nieuw', text:'Correctie: Lisa Korver All Day en Pegassi All Day (beide Artists for President, al uitverkocht) stonden op prijs "--" — nu voorzien van een schatting op basis van Marktplaats-doorverkoopprijzen (€66,00 resp. €119,00), bij gebrek aan een terug te vinden officiële prijs.'},
-  {type:'alert', text:'Tegendraads Festival vond plaats op 25 juli 2026 — dat is 4 dagen geleden. Event staat nog in de tracking (Paylogic-widget bleef ook deze week leeg laden), maar is een kandidaat om volgende week te verwijderen nu het voorbij is.'},
-  {type:'alert', text:'Verknipt Festival 2027 (Strijkviertel, Utrecht) kwam deze week niet voor in de "ALL EVENTS"-lijst op verknipt.org — vorige status aangehouden, volgende week checken of het event nog actief is.'},
-  {type:'pre', text:'Verknipt ‘Arena’ 2026, DGTL Amsterdam 2027: nog altijd in pre-registratie/notify-fase, geen wijziging.'},
+{type:'up', text:'Prijsstijging: Verknipt PULSE x Diffrent All Day Long — €29,29 → €34,34 (Normal-tier uitverkocht, Late Ticket is nu de laagste optie).'},
+{type:'up', text:'Prijsstijging: FYM R² Festival (Reinier Zonneveld) — €47,00 → €49,50 (Late Ticket).'},
+{type:'up', text:'Prijsstijging: FYM Boris Brejcha (4hrs) & Friends — €53,50 → €56,50 (Late - last 400).'},
+{type:'fase', text:'FYM x Teletech ADE: Fase 2 is 98% verkocht — status opgehoogd naar bijna uitverkocht, prijs €39,00 → €42,00.'},
+{type:'fase', text:'FYM Kruelty B2B Vieze Asbak (3hrs): nu Late-tier "last 500" — status opgehoogd naar bijna uitverkocht, prijs €39,50 → €40,50.'},
+{type:'uit', text:'Artists for President — Skepta pres. Más Tiempo is nu volledig SOLD OUT (was bijna uitverkocht).'},
+{type:'uit', text:'Audio Obscura Festival – Combi dag+nacht is nu uitverkocht op Weeztix (was in verkoop).'},
+{type:'up', text:'Gashouder Mochakk Calling (ADE): First en Second Release uitverkocht, nu Final Release €74,95 (was €59,95, in_verkoop → bijna_uitverkocht).'},
+{type:'up', text:'Gashouder Sammy Virji Curates (ADE): First en Second Release uitverkocht, nu Final Release €64,00 (was €49,00, in_verkoop → bijna_uitverkocht).'},
+{type:'up', text:'Maas Open Air – Summer Festival: "Late Maas" is voorbij, nu "Final Maas" €47,50 (was €44,99).'},
+{type:'nieuw', text:'Correctie: Artists for President — Lisa Korver All Day en Skepta pres. Más Tiempo/Pegassi zijn nu rechtstreeks bevestigd via artistsforpresident.com/events i.p.v. Marktplaats-schattingen.'},
+{type:'alert', text:'Audio Obscura Festival – By Day: General en Group tickets zijn uitverkocht op Weeztix, alleen het Backstage-tarief (€185,45) is nog te koop — grote prijssprong t.o.v. €79,45 vorige week, geen normale fase-stap maar overstap naar een ander tickettype.'},
+{type:'uit', text:'Tegendraads Festival 2026 is verwijderd uit de tracking (event vond al plaats op 25 juli 2026, ruim een week geleden).'},
+{type:'nieuw', text:'Twee nieuwe Tegendraads-events toegevoegd op verzoek (via wijzijntegendraads.nl): Overdrive (30 okt, Vasim Nijmegen, €35,00) en Onbegrensd (31 okt, Vasim Nijmegen, €30,00), beide Paylogic. Let op: wijzijntegendraads.nl toont ook een derde, nog niet getrackt event "Indoor" (9 jan 2027, alleen pre-register) — laat het weten als die er ook bij moet.'},
+{type:'nieuw', text:'Correctie: de Δ-kolom liet vorige week ten onrechte geen enkele prijsstijging zien. Oorzaak: het PREV-veld was per abuis gevuld met de nieuwe (huidige) prijzen in plaats van de prijzen van de vorige meting. Hersteld naar de echte 29-7-waarden, waardoor de prijsstijgingen van deze week nu correct als Δ zichtbaar zijn.'},
+{type:'alert', text:'FYM Festival Groningen: officiële eventpagina gaf deze week een 404, en de gevonden CM.com-shop bleek een gearchiveerde pagina van de 2025-editie. Partyflock bevestigt dat het event nog gepland staat; prijs/status niet direct herbevestigd, volgende week rechtstreeks bij Martiniplaza checken.'},
+{type:'alert', text:'Into the Woods ADE Festival & Soenda Indoor: eigen ticketwidgets (Eventix / Weeztix) laadden deze week leeg — uitgeweken naar Partyflock/social media, prijzen incl. servicekosten dus niet 1-op-1 vergelijkbaar met de excl.-fee-basisprijs. Laatst bekende prijs aangehouden.'},
+{type:'pre', text:'Verknipt Festival 2027, Verknipt ‘Arena’ 2026, Awakenings Upclose 2027, FYM Kingsday 2027, FYM Festival 2027 (Arnhem), DGTL Amsterdam 2027: geen wijziging in status of prijs deze week.'},
 ];
 
 // Bronnen die deze week gecontroleerd zijn
 const HEALTH_OK = false; // niet alle bronnen konden deze week volledig geverifieerd worden
 const HEALTH_ISSUES = [
-  {name:'Tegendraads / Paylogic', note:'ticketwidget bleef leeg laden bij scrapen; event is bovendien al 4 dagen geleden voorbij'},
-  {name:'AFP — Lisa Korver & Pegassi', note:'originele officiële ticketprijs niet meer terug te vinden na uitverkoop; getoonde prijs is een schatting op basis van Marktplaats-doorverkoop'},
-  {name:'FYM Festival Groningen', note:'prijs dit jaar nog niet gepubliceerd gevonden; getoonde prijs is geschat op basis van vorig jaar'},
+{name:'FYM Festival Groningen', note:'officiële eventpagina gaf 404, CM.com-shop bleek gearchiveerde 2025-pagina; prijs/status niet rechtstreeks herbevestigd'},
+{name:'Into the Woods ADE Festival / Eventix', note:'eigen ticketwidget laadde leeg (SPA/canvas); uitgeweken naar Partyflock (incl. servicekosten)'},
+{name:'Soenda Indoor / Weeztix', note:'eigen ticketwidget laadde leeg; uitgeweken naar Partyflock en social media'},
 ];
-
 
 // ---------------------------------------------------------------------
 // RENDER LOGIC
@@ -288,183 +307,183 @@ const MONTHS_NL = ['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','
 const MONTHS_NL_LONG = ['januari','februari','maart','april','mei','juni','juli','augustus','september','oktober','november','december'];
 
 function fmtPrice(p){
-  if(p === null || p === undefined) return '<span class="price na">--</span>';
-  return '<span class="price">€ ' + p.toFixed(2).replace('.', ',') + '</span>';
+if(p === null || p === undefined) return '<span class="price na">--</span>';
+return '<span class="price">€ ' + p.toFixed(2).replace('.', ',') + '</span>';
 }
 
 function fmtDateShort(iso){
-  if(iso === 'TBA' || !iso) return 'TBA';
-  const d = new Date(iso + 'T12:00:00');
-  return d.getDate() + ' ' + MONTHS_NL[d.getMonth()] + ' ' + d.getFullYear();
+if(iso === 'TBA' || !iso) return 'TBA';
+const d = new Date(iso + 'T12:00:00');
+return d.getDate() + ' ' + MONTHS_NL[d.getMonth()] + ' ' + d.getFullYear();
 }
 
 function fmtDateLong(iso){
-  if(iso === 'TBA' || !iso) return 'TBA';
-  const d = new Date(iso + 'T12:00:00');
-  return d.getDate() + ' ' + MONTHS_NL_LONG[d.getMonth()] + ' ' + d.getFullYear();
+if(iso === 'TBA' || !iso) return 'TBA';
+const d = new Date(iso + 'T12:00:00');
+return d.getDate() + ' ' + MONTHS_NL_LONG[d.getMonth()] + ' ' + d.getFullYear();
 }
 
 function daysDiff(iso){
-  if(iso === 'TBA' || !iso) return null;
-  const d = new Date(iso + 'T12:00:00');
-  const s = new Date(SNAPSHOT + 'T12:00:00');
-  return Math.round((d - s) / 86400000);
+if(iso === 'TBA' || !iso) return null;
+const d = new Date(iso + 'T12:00:00');
+const s = new Date(SNAPSHOT + 'T12:00:00');
+return Math.round((d - s) / 86400000);
 }
 
 function statusLabel(s){
-  const map = {
-    in_verkoop: 'In verkoop',
-    bijna_uitverkocht: 'Bijna uitverkocht',
-    uitverkocht: 'Uitverkocht',
-    pre_register: 'Pre-register',
-    niet_in_verkoop: 'Niet in verkoop',
-  };
-  return map[s] || s;
+const map = {
+in_verkoop: 'In verkoop',
+bijna_uitverkocht: 'Bijna uitverkocht',
+uitverkocht: 'Uitverkocht',
+pre_register: 'Pre-register',
+niet_in_verkoop: 'Niet in verkoop',
+};
+return map[s] || s;
 }
 
 function renderHeader(){
-  document.getElementById('header-sub').textContent =
-    'Alleen NL-events · actieve (laagst beschikbare) prijs · laatste meting: ' + fmtDateLong(SNAPSHOT);
+document.getElementById('header-sub').textContent =
+'Alleen NL-events · actieve (laagst beschikbare) prijs · laatste meting: ' + fmtDateLong(SNAPSHOT);
 }
 
 function renderStats(){
-  const counts = {events: EVENTS.length, organizers: new Set(EVENTS.map(e=>e.organizer)).size,
-    in_verkoop:0, bijna_uitverkocht:0, uitverkocht:0, pre_register:0};
-  EVENTS.forEach(e => { if(counts.hasOwnProperty(e.status)) counts[e.status]++; });
-  const cards = [
-    {num: counts.events, label:'Events'},
-    {num: counts.organizers, label:'Organisatoren'},
-    {num: counts.in_verkoop, label:'In verkoop'},
-    {num: counts.bijna_uitverkocht, label:'Bijna uitverkocht'},
-    {num: counts.uitverkocht, label:'Uitverkocht'},
-    {num: counts.pre_register, label:'Pre-register'},
-  ];
-  const row = document.getElementById('stats-row');
-  cards.forEach(c => {
-    const div = document.createElement('div');
-    div.className = 'card stat-card';
-    div.innerHTML = '<div class="stat-num">' + c.num + '</div><div class="stat-label">' + c.label + '</div>';
-    row.appendChild(div);
-  });
+const counts = {events: EVENTS.length, organizers: new Set(EVENTS.map(e=>e.organizer)).size,
+in_verkoop:0, bijna_uitverkocht:0, uitverkocht:0, pre_register:0};
+EVENTS.forEach(e => { if(counts.hasOwnProperty(e.status)) counts[e.status]++; });
+const cards = [
+{num: counts.events, label:'Events'},
+{num: counts.organizers, label:'Organisatoren'},
+{num: counts.in_verkoop, label:'In verkoop'},
+{num: counts.bijna_uitverkocht, label:'Bijna uitverkocht'},
+{num: counts.uitverkocht, label:'Uitverkocht'},
+{num: counts.pre_register, label:'Pre-register'},
+];
+const row = document.getElementById('stats-row');
+cards.forEach(c => {
+const div = document.createElement('div');
+div.className = 'card stat-card';
+div.innerHTML = '<div class="stat-num">' + c.num + '</div><div class="stat-label">' + c.label + '</div>';
+row.appendChild(div);
+});
 }
 
 function renderChangelog(){
-  const ul = document.getElementById('changelog');
-  if(!CHANGELOG.length){
-    ul.innerHTML = '<div class="empty-note">Geen wijzigingen deze week.</div>';
-  } else {
-    const tagLabels = {up:'Prijs', down:'Prijs', fase:'Fase', uit:'Uit', nieuw:'Nieuw', pre:'Pre'};
-    CHANGELOG.forEach(c => {
-      const li = document.createElement('li');
-      if(c.type === 'alert'){
-        li.innerHTML = '<span class="calert">⚠ ALERT</span><span>' + c.text + '</span>';
-      } else {
-        li.innerHTML = '<span class="ctag ' + c.type + '">' + (tagLabels[c.type] || c.type) + '</span><span>' + c.text + '</span>';
-      }
-      ul.appendChild(li);
-    });
-  }
+const ul = document.getElementById('changelog');
+if(!CHANGELOG.length){
+ul.innerHTML = '<div class="empty-note">Geen wijzigingen deze week.</div>';
+} else {
+const tagLabels = {up:'Prijs', down:'Prijs', fase:'Fase', uit:'Uit', nieuw:'Nieuw', pre:'Pre'};
+CHANGELOG.forEach(c => {
+const li = document.createElement('li');
+if(c.type === 'alert'){
+li.innerHTML = '<span class="calert">⚠ ALERT</span><span>' + c.text + '</span>';
+} else {
+li.innerHTML = '<span class="ctag ' + c.type + '">' + (tagLabels[c.type] || c.type) + '</span><span>' + c.text + '</span>';
+}
+ul.appendChild(li);
+});
+}
 
-  const healthEl = document.getElementById('health-line');
-  if(HEALTH_OK && HEALTH_ISSUES.length === 0){
-    healthEl.innerHTML = '<span class="health-dot"></span> Alle bronnen waren leesbaar bij de meting van ' + fmtDateShort(SNAPSHOT).replace(/ /g,'-') + '.';
-  } else {
-    const names = HEALTH_ISSUES.map(h => h.name + (h.note ? ' (' + h.note + ')' : '')).join(', ');
-    healthEl.innerHTML = '<span class="health-dot bad"></span> Niet bereikbaar bij deze meting: ' + names + '.';
-  }
+const healthEl = document.getElementById('health-line');
+if(HEALTH_OK && HEALTH_ISSUES.length === 0){
+healthEl.innerHTML = '<span class="health-dot"></span> Alle bronnen waren leesbaar bij de meting van ' + fmtDateShort(SNAPSHOT).replace(/ /g,'-') + '.';
+} else {
+const names = HEALTH_ISSUES.map(h => h.name + (h.note ? ' (' + h.note + ')' : '')).join(', ');
+healthEl.innerHTML = '<span class="health-dot bad"></span> Niet bereikbaar bij deze meting: ' + names + '.';
+}
 }
 
 function renderAddToggle(){
-  const toggle = document.getElementById('add-toggle');
-  const panel = document.getElementById('add-panel');
-  toggle.addEventListener('click', () => {
-    const isOpen = panel.style.display !== 'none';
-    panel.style.display = isOpen ? 'none' : 'block';
-    toggle.classList.toggle('open', !isOpen);
-  });
+const toggle = document.getElementById('add-toggle');
+const panel = document.getElementById('add-panel');
+toggle.addEventListener('click', () => {
+const isOpen = panel.style.display !== 'none';
+panel.style.display = isOpen ? 'none' : 'block';
+toggle.classList.toggle('open', !isOpen);
+});
 }
 
 let activeStatus = 'alle';
 
 function populateFilters(){
-  const orgSel = document.getElementById('organizer-filter');
-  const organizers = Array.from(new Set(EVENTS.map(e=>e.organizer))).sort();
-  orgSel.innerHTML = '<option value="alle">Alle organisatoren</option>' +
-    organizers.map(o => '<option value="' + o + '">' + o + '</option>').join('');
+const orgSel = document.getElementById('organizer-filter');
+const organizers = Array.from(new Set(EVENTS.map(e=>e.organizer))).sort();
+orgSel.innerHTML = '<option value="alle">Alle organisatoren</option>' +
+organizers.map(o => '<option value="' + o + '">' + o + '</option>').join('');
 
-  const monthSel = document.getElementById('month-filter');
-  const monthKeys = Array.from(new Set(EVENTS.filter(e => e.date !== 'TBA').map(e => e.date.slice(0,7)))).sort();
-  monthSel.innerHTML = '<option value="alle">Alle maanden</option>' +
-    monthKeys.map(m => {
-      const [y, mo] = m.split('-');
-      return '<option value="' + m + '">' + MONTHS_NL_LONG[parseInt(mo,10)-1] + ' ' + y + '</option>';
-    }).join('') +
-    '<option value="TBA">TBA</option>';
+const monthSel = document.getElementById('month-filter');
+const monthKeys = Array.from(new Set(EVENTS.filter(e => e.date !== 'TBA').map(e => e.date.slice(0,7)))).sort();
+monthSel.innerHTML = '<option value="alle">Alle maanden</option>' +
+monthKeys.map(m => {
+const [y, mo] = m.split('-');
+return '<option value="' + m + '">' + MONTHS_NL_LONG[parseInt(mo,10)-1] + ' ' + y + '</option>';
+}).join('') +
+'<option value="TBA">TBA</option>';
 
-  document.querySelectorAll('#status-pills .pill').forEach(btn => {
-    btn.addEventListener('click', () => {
-      activeStatus = btn.dataset.status;
-      document.querySelectorAll('#status-pills .pill').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      renderTable();
-    });
-  });
-  orgSel.addEventListener('change', renderTable);
-  monthSel.addEventListener('change', renderTable);
+document.querySelectorAll('#status-pills .pill').forEach(btn => {
+btn.addEventListener('click', () => {
+activeStatus = btn.dataset.status;
+document.querySelectorAll('#status-pills .pill').forEach(b => b.classList.remove('active'));
+btn.classList.add('active');
+renderTable();
+});
+});
+orgSel.addEventListener('change', renderTable);
+monthSel.addEventListener('change', renderTable);
 }
 
 function renderTable(){
-  const tbody = document.getElementById('events-tbody');
-  tbody.innerHTML = '';
-  const orgVal = document.getElementById('organizer-filter').value;
-  const monthVal = document.getElementById('month-filter').value;
+const tbody = document.getElementById('events-tbody');
+tbody.innerHTML = '';
+const orgVal = document.getElementById('organizer-filter').value;
+const monthVal = document.getElementById('month-filter').value;
 
-  const sorted = EVENTS.slice().sort((a,b) => {
-    if(a.date === 'TBA' && b.date === 'TBA') return 0;
-    if(a.date === 'TBA') return 1;
-    if(b.date === 'TBA') return -1;
-    return new Date(a.date) - new Date(b.date);
-  });
+const sorted = EVENTS.slice().sort((a,b) => {
+if(a.date === 'TBA' && b.date === 'TBA') return 0;
+if(a.date === 'TBA') return 1;
+if(b.date === 'TBA') return -1;
+return new Date(a.date) - new Date(b.date);
+});
 
-  sorted.forEach(ev => {
-    if(activeStatus !== 'alle' && ev.status !== activeStatus) return;
-    if(orgVal !== 'alle' && ev.organizer !== orgVal) return;
-    if(monthVal !== 'alle' && ev.date.slice(0,7) !== monthVal) return;
+sorted.forEach(ev => {
+if(activeStatus !== 'alle' && ev.status !== activeStatus) return;
+if(orgVal !== 'alle' && ev.organizer !== orgVal) return;
+if(monthVal !== 'alle' && ev.date.slice(0,7) !== monthVal) return;
 
-    const prevPrice = PREV.hasOwnProperty(ev.id) ? PREV[ev.id] : undefined;
-    let deltaHtml = '<span class="delta-na">--</span>';
-    if(ev.price !== null && prevPrice !== null && prevPrice !== undefined && ev.price !== prevPrice){
-      const diff = ev.price - prevPrice;
-      deltaHtml = '<span class="' + (diff > 0 ? 'delta-up' : 'delta-down') + '">' + (diff > 0 ? '▲' : '▼') + ' € ' + Math.abs(diff).toFixed(2).replace('.', ',') + '</span>';
-    }
+const prevPrice = PREV.hasOwnProperty(ev.id) ? PREV[ev.id] : undefined;
+let deltaHtml = '<span class="delta-na">--</span>';
+if(ev.price !== null && prevPrice !== null && prevPrice !== undefined && ev.price !== prevPrice){
+const diff = ev.price - prevPrice;
+deltaHtml = '<span class="' + (diff > 0 ? 'delta-up' : 'delta-down') + '">' + (diff > 0 ? '▲' : '▼') + ' € ' + Math.abs(diff).toFixed(2).replace('.', ',') + '</span>';
+}
 
-    const diffDays = daysDiff(ev.date);
-    const dateSub = diffDays === null ? '' : (diffDays >= 0 ? ('over ' + diffDays + ' dgn') : (Math.abs(diffDays) + ' dgn geleden'));
+const diffDays = daysDiff(ev.date);
+const dateSub = diffDays === null ? '' : (diffDays >= 0 ? ('over ' + diffDays + ' dgn') : (Math.abs(diffDays) + ' dgn geleden'));
 
-    const tr = document.createElement('tr');
-    tr.title = ev.note || '';
-    tr.innerHTML =
-      '<td><div class="ev-name">' + ev.name + '</div><div class="ev-venue">' + (ev.venue || '') + '</div></td>' +
-      '<td>' + ev.organizer + '</td>' +
-      '<td><div class="date-main">' + fmtDateShort(ev.date) + '</div><div class="date-sub">' + dateSub + '</div></td>' +
-      '<td>' + fmtPrice(ev.price) + '</td>' +
-      '<td>' + deltaHtml + '</td>' +
-      '<td><span class="status-pill status-' + ev.status + '">' + statusLabel(ev.status) + '</span></td>' +
-      '<td class="platform">' + (ev.platform || '—') + '</td>';
-    tbody.appendChild(tr);
-  });
+const tr = document.createElement('tr');
+tr.title = ev.note || '';
+tr.innerHTML =
+'<td><div class="ev-name">' + ev.name + '</div><div class="ev-venue">' + (ev.venue || '') + '</div></td>' +
+'<td>' + ev.organizer + '</td>' +
+'<td><div class="date-main">' + fmtDateShort(ev.date) + '</div><div class="date-sub">' + dateSub + '</div></td>' +
+'<td>' + fmtPrice(ev.price) + '</td>' +
+'<td>' + deltaHtml + '</td>' +
+'<td><span class="status-pill status-' + ev.status + '">' + statusLabel(ev.status) + '</span></td>' +
+'<td class="platform">' + (ev.platform || '—') + '</td>';
+tbody.appendChild(tr);
+});
 
-  if(!tbody.children.length){
-    const tr = document.createElement('tr');
-    tr.innerHTML = '<td colspan="7" style="color:var(--muted); text-align:center; padding:24px;">Geen events gevonden voor dit filter.</td>';
-    tbody.appendChild(tr);
-  }
+if(!tbody.children.length){
+const tr = document.createElement('tr');
+tr.innerHTML = '<td colspan="7" style="color:var(--muted); text-align:center; padding:24px;">Geen events gevonden voor dit filter.</td>';
+tbody.appendChild(tr);
+}
 }
 
 function renderFooter(){
-  document.getElementById('footer-note').textContent =
-    'Automatisch gegenereerd door de wekelijkse ticketprijs-monitor · ' + EVENTS.length + ' events bij ' +
-    new Set(EVENTS.map(e=>e.organizer)).size + ' organisatoren · laatst bijgewerkt ' + fmtDateShort(SNAPSHOT);
+document.getElementById('footer-note').textContent =
+'Automatisch gegenereerd door de wekelijkse ticketprijs-monitor · ' + EVENTS.length + ' events bij ' +
+new Set(EVENTS.map(e=>e.organizer)).size + ' organisatoren · laatst bijgewerkt ' + fmtDateShort(SNAPSHOT);
 }
 
 renderHeader();
